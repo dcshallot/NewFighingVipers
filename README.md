@@ -256,8 +256,13 @@ Reference/
     Models/
     Textures/
     Audio/
+Resources/
+  M2emulator/
+    # Local-only Model 2 emulator install, ROM zips, runtime cache/save data
+    # Kept out of Git by .gitignore; do not store curated reusable outputs here
 Tools/
   Extraction/
+    Model2/
 Docs/
 
 ---

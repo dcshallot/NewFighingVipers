@@ -1,0 +1,46 @@
+require("model2")
+
+local frame_count = 0
+local dumped = false
+
+function Init()
+	local marker = assert(io.open("texdump/fvipers_lua_started.txt", "w"))
+	marker:write("fvipers.lua loaded\n")
+	marker:close()
+end
+
+local function write_dword_le(file, value)
+	local b0 = AND(value, 0xff)
+	local b1 = AND(SHR(value, 8), 0xff)
+	local b2 = AND(SHR(value, 16), 0xff)
+	local b3 = AND(SHR(value, 24), 0xff)
+	file:write(string.char(b0, b1, b2, b3))
+end
+
+local function dump_range(path, start_addr, end_addr)
+	local file = assert(io.open(path, "wb"))
+	local addr = start_addr
+	while addr < end_addr do
+		write_dword_le(file, I960_ReadDWord(addr))
+		addr = addr + 4
+	end
+	file:close()
+end
+
+local function dump_texture_ram_once()
+	if dumped then
+		return
+	end
+
+	dump_range("texdump/fvipers_textureram0.bin", TEX0BASE, TEX1BASE)
+	dump_range("texdump/fvipers_textureram1.bin", TEX1BASE, LUMAXLAT)
+	dumped = true
+end
+
+function Frame()
+	frame_count = frame_count + 1
+
+	if frame_count == 300 then
+		dump_texture_ram_once()
+	end
+end
