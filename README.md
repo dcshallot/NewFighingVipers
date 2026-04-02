@@ -1,99 +1,230 @@
 # Fighting Vipers Fan Remake (Prototype)
 
 ## 🎯 Project Goal
-This project is a **non-commercial fan remake prototype** inspired by *Fighting Vipers*.
+This project is a **research-driven, non-commercial fan remake prototype** inspired by *Fighting Vipers*.
 
-The goal is to build a **vertical slice** that demonstrates core gameplay:
+Working assumption for this plan:
+
+- Original game resources may be studied, extracted, and used for prototype work
+- The focus is learning, validation, and rebuilding a playable slice rather than shipping a commercial product
+
+The prototype should prove:
 
 - Arena-based 3D combat  
-- Armor break system (signature feature)  
-- Simple combo system  
-- Satisfying physics feel  
+- Signature armor break presentation  
+- Strong single-action combat feel before deeper combo design  
+- A practical pipeline from original-game research to extracted assets to a Unity prototype  
 
 ---
 
 ## 🧠 Development Principles
 
-### 1. Prototype First
-Focus on **playable gameplay**, not polish.
+### 1. Original-Game-First Research
+Use the original game, emulator captures, extracted assets, move lists, and hidden-content documentation as the primary reference layer.
 
-### 2. Minimal Cost
-Use:
-- Unity (free)
-- Free assets where possible
-- Existing AI tools:
-  - KelingAI (可灵AI)
-  - SeedanceAI
+### 2. Single Actions Before Combos
+Prioritize **punch, kick, block, damage, knockback, and armor break**. Combo depth is a later expansion, not an early blocker.
 
-### 3. AI-Assisted Workflow
-AI is used for:
-- Character concepts
-- Armor break design
-- Motion reference
-- Style exploration
+### 3. Prototype Fast, Replace Selectively
+Allow temporary direct-use placeholders from extracted original resources to validate feel quickly. Rebuild or clean up only where it improves quality or workflow.
+
+### 4. Minimal Reinvention
+If the original game already solves a problem visually, structurally, or rhythmically, study it first before inventing a new solution.
+
+### 5. Windows-First Development
+Use a **Windows PC** as the main machine for Unity, emulator tooling, controllers, extraction utilities, and GPU-heavy workflows.
 
 ---
 
-## ⚙️ Engine
-- Unity
+## ⚙️ Engine & Core Stack
+- Unity LTS on Windows PC
+- C# gameplay code with data-driven combat definitions
+- Unity Input System
+- Animator-based prototype animation control
+- Cinemachine for camera exploration
+- Blender for inspection, cleanup, and conversion
+- Git for version control
+
+### Recommended Technical Scope
+- Offline local prototype only
+- 1v1 arena combat
+- No netcode in the first slice
+- No story or progression systems in the first slice
 
 ---
 
-## 🎮 Core Features
+## 🔎 Research & Asset Strategy
+
+### Source Priority
+1. **Original-game research and extraction**
+2. **Community archives and reverse-engineering references**
+3. **AI support tools for gaps or variants**
+4. **Generic free placeholders only when needed**
+
+### Primary Sources
+- Original game running in emulator or on original media
+- Gameplay captures, screenshots, and timing notes
+- Extracted models, textures, UI graphics, audio, and move references
+
+### Supporting Sources
+- TCRF
+- SegaXtreme
+- Hidden Palace
+- Models / Textures / Sounds Resource
+- Community extraction and conversion tools
+
+### AI Support Only
+AI should now be treated as a **secondary helper**, not the main art path. Use it when the original material is missing, unclear, or needs variation.
+
+---
+
+## 🎮 Re-Evaluated Core Features
 
 ### Arena Combat
 - Fixed 3D arena
 - Two fighters
 - Controlled movement space
+- Camera tuned for readability over cinematic complexity
+
+### Single-Action Combat Core
+- Punch
+- Kick
+- Block
+- Basic hit confirm and recovery states
+- Combo system intentionally deferred
 
 ### Armor Break System
-- Armor degrades with hits
-- Multiple visual stages:
+- Phase 1: a shared armor durability pipeline for fast validation
+- Phase 2: visible armor zones or parts with more specific break presentation
+- Visual states:
   - Intact
   - Damaged
   - Broken
 
-### Simple Combat System
-- Punch
-- Kick
-- Block
-- Basic combos
-
-### Physics Feel
+### Combat Feel
+- Hit stop
 - Knockback
 - Hit reaction
-- Impact feedback
+- Impact audio / visual feedback
+- Readable recovery timing
+
+### Authentic Reference Layer
+- Study original animation timing, sound cues, character proportions, and UI rhythm
+- Reuse or adapt original-resource findings whenever it speeds up prototype validation
 
 ---
 
-## 🎨 Art Pipeline (AI-Assisted)
+## 🧱 Technical Direction
 
-### KelingAI
-Used for:
-- Character concept (front / side / back)
-- Armor break stages
-- Visual style consistency
+### Gameplay Architecture
+- Start with a small character state machine:
+  - Idle
+  - Move
+  - Attack
+  - Block
+  - Hit
+  - ArmorBreak
+- Define moves with data assets such as ScriptableObjects:
+  - startup
+  - active
+  - recovery
+  - damage
+  - knockback
+  - armor damage
+- Keep combat deterministic and readable before adding more depth
 
-### SeedanceAI
+### Hit Detection
+- Use explicit hitboxes and hurtboxes
+- Activate attack windows from animation timing
+- Keep the first implementation simple and debuggable
+
+### Animation Path
+- First pass: placeholder or extracted/reference motions to validate timing
+- Second pass: cleaned-up clips or recreated motions only if needed
+- Prioritize stance, punch, kick, block, hit reaction, and break reaction before anything flashy
+
+### Asset Path
+- Step 1: collect original references and extracted assets
+- Step 2: inspect, clean, and convert them in Blender or dedicated tools
+- Step 3: import them into Unity as prototype assets
+- Step 4: map materials, audio events, and presentation states
+- Step 5: rebuild assets only when they become a quality or workflow bottleneck
+
+### Audio & Presentation
+- Use original audio cues or direct reference where helpful
+- Rebuild playback logic in Unity with clean event timing
+- Keep UI minimal but readable: health, armor, and only the feedback needed for the first slice
+
+---
+
+## 🎨 Art & Asset Pipeline
+
+### Original Asset Pipeline
 Used for:
-- Motion reference (punch/kick)
-- Fighting stance exploration
+- Character proportion reference
+- Armor part structure
+- Texture and palette study
+- UI study
+- Sound study
+- Fast prototype placeholders
+
+### Extraction / Conversion Tools
+Candidates to test:
+- [`cyberwarriorx/vcdextract`](https://github.com/cyberwarriorx/vcdextract)
+- [`doyousketch2/SatRGB`](https://github.com/doyousketch2/SatRGB)
+- Saturn model conversion tools
+- Blender-based cleanup workflow
+
+### AI Support Pipeline
+Use only where it adds value:
+- KelingAI: missing concept variations or armor redesign passes
+- SeedanceAI: motion reference exploration
+- [`tori29umai/Qwen-Image-2509-CharacterSheet`](https://huggingface.co/spaces/tori29umai/Qwen-Image-2509-CharacterSheet): turnarounds and design sheets
+- [`AIARTCHAN/openpose_editor`](https://huggingface.co/spaces/AIARTCHAN/openpose_editor): pose setup for punch / kick / block
+- [`diffusers/stable-diffusion-xl-inpainting`](https://huggingface.co/spaces/diffusers/stable-diffusion-xl-inpainting): armor damage variants
+- [`frogleo/Image-to-3D`](https://huggingface.co/spaces/frogleo/Image-to-3D): rough volume checks only
 
 ### 3D Strategy
-- Use free humanoid base OR low-poly Blender model
-- Apply AI-generated references for design
+- Prefer extracted or reference-driven prototype assets first
+- Use Blender to simplify, retopo, or re-rig only when necessary
+- Do not block gameplay progress on perfect asset quality
 
 ---
 
 ## 💰 Cost Strategy
 
-Target: **€0 additional cost**
+Target: **Near €0 additional cost**
 
 - Unity: Free
-- UI: Built-in Unity
-- Animations: Mixamo (free)
-- Models: Free or self-made
-- AI tools: already owned
+- Git: Free
+- Blender: Free
+- Existing PC, controller, and original game resources: already available
+- AI tools: already owned or optional
+- Main cost: time spent on extraction, cleanup, and combat tuning
+
+---
+
+## 📚 Re-Evaluated External References
+
+Current direction for the first playable slice:
+- Prioritize **single actions** over combo depth
+- Use **original-resource research** as the primary production shortcut
+- Treat AI as a **support layer**, not the main content source
+
+| Goal | Project / Resource | Simple Description | Why It Fits This Project | Current Priority / Usage |
+| --- | --- | --- | --- | --- |
+| Gameplay reference | [`tryandev/divekick-unity3d`](https://github.com/tryandev/divekick-unity3d) | A Unity3D two-player 3D fighting prototype. | Good reference for quickly building a playable combat loop, simple attacks, hit feedback, and character interaction. | **High priority**. Best current gameplay reference. |
+| Gameplay reference | [`OmarAlesharie/Fighting-Survival`](https://github.com/OmarAlesharie/Fighting-Survival) | A simple 3D fighting prototype in Unity. The README confirms it was developed in **Unity 2018.3.0f2**. | Useful for studying how a Unity-based 3D fighting prototype is structured around attacks, hit reactions, and basic player control. | **Medium priority**. Strong secondary gameplay reference. |
+| Combo architecture | [`homemech/unity-pattern-combo`](https://github.com/homemech/unity-pattern-combo) | A Unity/C# demo of a combo system built around the command pattern. | Potentially useful later for input buffering and combo architecture. | **Low priority**. Current scope should stay on single commands first. |
+| Original asset archive | [`The Models Resource - Fighting Vipers (Saturn)`](https://models.spriters-resource.com/saturn/fightingvipers/) | Public archive of extracted Saturn model resources. | Fast route to character scale, silhouette, and armor structure research. | **High priority**. Best shortcut for character reconstruction study. |
+| Original asset archive | [`The Textures Resource - Fighting Vipers (Saturn)`](https://textures.spriters-resource.com/saturn/fightingvipers/) | Public archive of extracted textures. | Useful for palette study, material breakup, UI look, and placeholder texture passes. | **High priority**. Strong art-reference source. |
+| Original asset archive | [`The Sounds Resource - Fighting Vipers (Saturn)`](https://sounds.spriters-resource.com/saturn/fightingvipers/) | Public archive of sound resources. | Useful for impact timing, voice references, and UI / combat sound study. | **High priority**. Strong feedback-design source. |
+| Hidden content research | [`TCRF - Fighting Vipers (Saturn)`](https://tcrf.net/Fighting_Vipers_(Sega_Saturn)) | Hidden content, regional differences, and debug-oriented findings. | Helps identify authentic features, variations, and content worth rebuilding. | **High priority**. Best hidden-content research source. |
+| Hidden content research | [`TCRF - Fighting Vipers (Arcade)`](https://tcrf.net/Fighting_Vipers_(Arcade)) | Arcade-specific unused content and debug findings. | Useful for cross-checking the Saturn version against the arcade original. | **Medium priority**. Good secondary authenticity source. |
+| Community research | [`SegaXtreme - Fighting Vipers`](https://segaxtreme.net/tags/fighting-vipers/) | Saturn patch, discovery, and discussion hub. | Useful for obscure findings, patches, and extraction clues. | **High priority**. Good practical research hub. |
+| Prototype archive | [`Hidden Palace - Fighting Vipers prototype`](https://hiddenpalace.org/Fighting_Vipers_(Jul_5,_1996_prototype)) | Preserved prototype build and notes. | Useful for cut content, version differences, and historical context. | **Medium priority**. Research value, not the main production path. |
+| Extraction pipeline | [`cyberwarriorx/vcdextract`](https://github.com/cyberwarriorx/vcdextract) / [`doyousketch2/SatRGB`](https://github.com/doyousketch2/SatRGB) | Saturn extraction tools for disc contents and image assets. | Practical starting point for turning owned original media into usable research files. | **High priority**. Core extraction path to test. |
+| AI support | [`AIARTCHAN/openpose_editor`](https://huggingface.co/spaces/AIARTCHAN/openpose_editor) / [`tori29umai/Qwen-Image-2509-CharacterSheet`](https://huggingface.co/spaces/tori29umai/Qwen-Image-2509-CharacterSheet) / [`diffusers/stable-diffusion-xl-inpainting`](https://huggingface.co/spaces/diffusers/stable-diffusion-xl-inpainting) / [`frogleo/Image-to-3D`](https://huggingface.co/spaces/frogleo/Image-to-3D) | Pose, turnaround, localized paintover, and rough 3D support tools. | Helpful only after original sources are insufficient or need augmentation. | **Support tools**. No longer the main production path. |
 
 ---
 
@@ -105,7 +236,7 @@ Assets/
     Arena/
     Materials/
     Textures/
-    Concept/
+    UI/
   Animations/
   Audio/
   Prefabs/
@@ -117,48 +248,78 @@ Assets/
     UI/
     Camera/
     Arena/
-  UI/
-Docs/
 Reference/
+  Captures/
+  MoveLists/
+  ResearchNotes/
+  OriginalAssets/
+    Models/
+    Textures/
+    Audio/
+Tools/
+  Extraction/
+Docs/
 
 ---
 
 ## 🚀 Development Phases
 
-### Phase 1 — Setup
-- Project structure
-- Git repo
-- Basic scene
+### Phase 0 — PC Setup & Research Pipeline
+- Prepare the main Windows PC environment
+- Confirm controller and emulator workflow
+- Set up extraction tools and folders
+- Collect reference captures and notes
 
-### Phase 2 — Core Combat
+### Phase 1 — Playable Arena Setup
+- Create the Unity project
+- Import it into this repo
+- Build a basic arena scene
+- Set up a readable camera
+- Place two test fighters
+
+### Phase 2 — Single Action Combat Core
 - Movement
-- Punch / kick
+- Punch
+- Kick
+- Block
 - Hit detection
 - Health system
 
-### Phase 3 — Armor Break
+### Phase 3 — Combat Feel & Feedback
+- Hit reaction
+- Knockback
+- Hit stop
+- Impact feedback
+- Basic UI
+- Basic combat audio timing
+
+### Phase 4 — Armor Break Prototype
 - Armor durability
 - Visual state changes
+- Intact / damaged / broken presentation
+- Break reaction handling
 
-### Phase 4 — Arena & Feedback
-- Arena setup
-- Camera
-- UI (health bars)
-- Knockback
+### Phase 5 — Original Asset Integration
+- Import one character-related reference asset path into Unity
+- Test textures, audio, or model conversion workflow
+- Validate that extracted resources can support the prototype directly
 
-### Phase 5 — AI Art Pass
-- Apply KelingAI concepts
-- Refine visual identity
+### Phase 6 — Expansion Later
+- Per-part armor logic
+- Second character or mirrored variant polish
+- Combo expansion only after the single-action loop feels right
 
 ---
 
 ## 🧪 MVP Scope
 
-- 1 character
+- 1 playable character
+- 1 test opponent or mirrored fighter
 - 1 arena
 - 3 actions (punch, kick, block)
 - Health system
 - Armor break system
+- At least one working original-resource integration path
 
 ---
 
@@ -166,15 +327,46 @@ Reference/
 
 The prototype is successful if:
 
-- Combat is playable
+- Combat is playable and readable
+- Single actions feel close to reference footage
 - Hits register correctly
 - Armor visibly breaks
-- Scene is stable and expandable
+- At least one model / texture / audio path from original research works in Unity
+- The scene is stable and expandable
 
 ---
 
 ## 🔜 Next Steps
 
-1. Create Unity project
-2. Import into this repo
-3. Build first playable scene
+### Setup & Research Checklist
+
+- [ ] Prepare the main Windows PC development and extraction environment
+  - [ ] Update GPU drivers
+  - [ ] Install Unity Hub
+  - [ ] Install a Unity LTS editor
+  - [ ] Set up Rider or VS Code
+  - [ ] Install Git
+  - [ ] Install Blender
+  - [ ] Confirm controller testing works
+  - [ ] Prepare emulator and capture tooling
+
+- [ ] Build the research workspace inside this repo
+  - [ ] Create or confirm `Reference/Captures/`
+  - [ ] Create or confirm `Reference/MoveLists/`
+  - [ ] Create or confirm `Reference/ResearchNotes/`
+  - [ ] Create or confirm `Reference/OriginalAssets/Models/`
+  - [ ] Create or confirm `Reference/OriginalAssets/Textures/`
+  - [ ] Create or confirm `Reference/OriginalAssets/Audio/`
+  - [ ] Create or confirm `Tools/Extraction/`
+  - [ ] Add tool notes and extraction logs
+
+- [ ] Test the original-resource pipeline
+  - [ ] Capture reference footage
+  - [ ] Try one texture extraction path or one audio extraction path first
+  - [ ] Verify the output files can be organized and reused
+
+- [ ] Create the Unity project and import it into this repo
+- [ ] Build one basic arena scene with two test fighters and a readable camera
+- [ ] Implement movement, punch, kick, and block with data-driven move definitions
+- [ ] Add hit detection, health, hit stop, knockback, and basic audio / UI feedback
+- [ ] Prototype the first armor break state changes and integrate one original-reference asset pass
