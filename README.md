@@ -11,7 +11,8 @@ Working assumption for this plan:
 The prototype should prove:
 
 - Arena-based 3D combat  
-- Signature armor break presentation  
+- A stable Honey base-texture coverage path and character material hookup
+- Signature armor break presentation remains a later milestone, but is intentionally deferred in the current Honey pass because broken-state asset coverage is still too expensive
 - Strong single-action combat feel before deeper combo design  
 - A practical pipeline from original-game research to extracted assets to a Unity prototype  
 
@@ -23,7 +24,7 @@ The prototype should prove:
 Use the original game, emulator captures, extracted assets, move lists, and hidden-content documentation as the primary reference layer.
 
 ### 2. Single Actions Before Combos
-Prioritize **punch, kick, block, damage, knockback, and armor break**. Combo depth is a later expansion, not an early blocker.
+Prioritize **punch, kick, block, damage, knockback, and Honey base-texture coverage**. Combo depth and armor break are later expansions, not early blockers.
 
 ### 3. Prototype Fast, Replace Selectively
 Allow temporary direct-use placeholders from extracted original resources to validate feel quickly. Rebuild or clean up only where it improves quality or workflow.
@@ -93,10 +94,16 @@ AI should now be treated as a **secondary helper**, not the main art path. Use i
 - Basic hit confirm and recovery states
 - Combo system intentionally deferred
 
-### Armor Break System
-- Phase 1: a shared armor durability pipeline for fast validation
-- Phase 2: visible armor zones or parts with more specific break presentation
-- Visual states:
+### Honey Base Texture Coverage
+- First lock Honey's normal-state face / hair / body / ornament texture set before broken-armor work
+- Build a fixed master texture set with manifest, atlas sheets, and a known missing-part list
+- Use gameplay and INTRO captures to fill normal-state coverage gaps first
+- Defer broken-armor-only textures until the base set and material mapping are stable
+
+### Deferred Armor Break System
+- Temporarily postponed from the current implementation slice because broken-state part capture and reconstruction is higher risk than the base Honey pass
+- Later reintroduce a shared armor durability pipeline and visible broken-state transitions
+- Target visual states when this returns:
   - Intact
   - Damaged
   - Broken
@@ -123,14 +130,14 @@ AI should now be treated as a **secondary helper**, not the main art path. Use i
   - Attack
   - Block
   - Hit
-  - ArmorBreak
+  - ArmorBreak (reserved for the deferred armor-break milestone)
 - Define moves with data assets such as ScriptableObjects:
   - startup
   - active
   - recovery
   - damage
   - knockback
-  - armor damage
+  - armor damage (reserved for the deferred armor-break milestone)
 - Keep combat deterministic and readable before adding more depth
 
 ### Hit Detection
@@ -298,18 +305,19 @@ Docs/
 - Basic UI
 - Basic combat audio timing
 
-### Phase 4 — Armor Break Prototype
-- Armor durability
-- Visual state changes
-- Intact / damaged / broken presentation
-- Break reaction handling
+### Phase 4 — Honey Texture Coverage & Fixed Master Set
+- Complete Honey normal-state texture coverage first
+- Update `Honey_Master_TextureSet` manifest and sheets as the fixed reference set
+- Track missing normal-state parts explicitly
+- Verify face / hair / body / ornament grouping before Unity material hookup
 
 ### Phase 5 — Original Asset Integration
 - Import one character-related reference asset path into Unity
-- Test textures, audio, or model conversion workflow
+- Test Honey base textures, audio, or model conversion workflow
 - Validate that extracted resources can support the prototype directly
 
 ### Phase 6 — Expansion Later
+- Armor break prototype and broken-state texture capture
 - Per-part armor logic
 - Second character or mirrored variant polish
 - Combo expansion only after the single-action loop feels right
@@ -323,7 +331,7 @@ Docs/
 - 1 arena
 - 3 actions (punch, kick, block)
 - Health system
-- Armor break system
+- Honey base-texture integration from a fixed master texture set
 - At least one working original-resource integration path
 
 ---
@@ -335,7 +343,7 @@ The prototype is successful if:
 - Combat is playable and readable
 - Single actions feel close to reference footage
 - Hits register correctly
-- Armor visibly breaks
+- Honey normal-state textures are complete enough to support stable material hookup, while armor break is explicitly deferred
 - At least one model / texture / audio path from original research works in Unity
 - The scene is stable and expandable
 
@@ -374,4 +382,5 @@ The prototype is successful if:
 - [ ] Build one basic arena scene with two test fighters and a readable camera
 - [ ] Implement movement, punch, kick, and block with data-driven move definitions
 - [ ] Add hit detection, health, hit stop, knockback, and basic audio / UI feedback
-- [ ] Prototype the first armor break state changes and integrate one original-reference asset pass
+- [ ] Complete Honey normal-state texture coverage, lock the fixed master texture manifest/sheets, and integrate one original-reference asset pass
+- [ ] Keep armor break and broken-state texture capture deferred until the base Honey material path is stable

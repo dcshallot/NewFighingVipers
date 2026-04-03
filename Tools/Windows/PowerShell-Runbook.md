@@ -140,3 +140,60 @@ Get-ChildItem 'C:\Windows\System32\xinput*.dll','C:\Windows\SysWOW64\xinput*.dll
 ### 当前建议
 - 以后如果是“所有项目都会复用的 Windows 命令规范”，补到本文件。
 - 如果是“Fighting Vipers / Model 2 这条研究线特有的坑和判断”，补到对应研究笔记，不要混进本文件。
+
+## 8. PNG / 图像批处理脚本
+
+### 应该怎么做
+- PowerShell 里只要用到 `[System.Drawing.Image]`、`[System.Drawing.Bitmap]`、`[System.Drawing.Graphics]`，脚本开头先显式 `Add-Type -AssemblyName System.Drawing`。
+- 先拿 1 张图或 1 页 contact sheet 做最小验证，确认尺寸读取、拼图、`.Save()` 和输出路径都真的成功，再扩到全量批处理。
+- `Image.FromFile(...)` 前先 `Test-Path -LiteralPath`，缺文件就明确报错或跳过，不要让后续 `DrawImage()` 继续吃到旧的 `$img` 对象/空对象。
+- `.Save(...)` 后立刻 `Get-Item` / `Test-Path` 验证输出文件真实存在，不要只看 `Write-Host` 打印了路径。
+- 分页处理数组时，优先用 `Select-Object -Skip/-First`；如果确实要按索引切片，先把输入包成 `@(...)` 并自己校验边界。
+- 生成 sheet 时，把文件名、尺寸、分类状态直接画到图上，后面人工筛图会比“图片和列表分开对照”更稳。
+
+### 不应该怎么做
+- 不要在没 `Add-Type -AssemblyName System.Drawing` 的情况下直接调用 `[System.Drawing.Image]::FromFile(...)`；PowerShell 会报 `Unable to find type [System.Drawing.Image]`。
+- 不要用可能越界的 `$items[$i..([Math]::Min(...))]` 直接分页；当集合为空、只有 1 个元素、或区间边界不对时，后续很容易退化成空对象/标量并触发一串难看的空引用错误。
+- 不要把“脚本打印了输出路径”当成“文件一定保存成功”；这次 contact sheet 脚本就出现过路径打印了，但目录里实际没有 PNG。
+- 不要在 `FromFile()` 失败后继续对 `$img` / `$g` / `$bmp` 调 `DrawImage()`、`DrawString()`、`Dispose()`；要么提前 `throw`，要么每轮都重新初始化并做空值保护。
+
+### 推荐模板
+```powershell
+Add-Type -AssemblyName System.Drawing
+$ErrorActionPreference = 'Stop'
+
+$files = @(Get-ChildItem -LiteralPath 'C:\path\input' -File -Filter '*.png' | Sort-Object Name)
+$pageSize = 30
+$page = $files | Select-Object -Skip 0 -First $pageSize
+
+$tileW = 180
+$tileH = 190
+$cols = 5
+$rows = [int][Math]::Max(1, [Math]::Ceiling($page.Count / [double]$cols))
+
+$bmp = [System.Drawing.Bitmap]::new([int]($tileW * $cols), [int]($tileH * $rows))
+$g = [System.Drawing.Graphics]::FromImage($bmp)
+$g.Clear([System.Drawing.Color]::Black)
+
+foreach ($file in $page) {
+    if (-not (Test-Path -LiteralPath $file.FullName)) {
+        throw "Missing image: $($file.FullName)"
+    }
+
+    $img = [System.Drawing.Image]::FromFile($file.FullName)
+    try {
+        # Draw image and labels here.
+    } finally {
+        $img.Dispose()
+    }
+}
+
+$outPath = 'C:\path\output\sheet.png'
+$bmp.Save($outPath, [System.Drawing.Imaging.ImageFormat]::Png)
+$g.Dispose()
+$bmp.Dispose()
+
+if (-not (Test-Path -LiteralPath $outPath)) {
+    throw "Expected output image was not created: $outPath"
+}
+```

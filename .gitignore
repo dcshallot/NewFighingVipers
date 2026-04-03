@@ -1,1 +1,45 @@
+# Unity generated folders/files.
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Unity-generated IDE/project files.
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.slnx
+*.unityproj
+*.booproj
+*.pidb
+*.user
+*.userprefs
+*.suo
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+sysinfo.txt
+
+# Temporary nested Unity project created by Hub defaults.
+# Repo policy requires initializing the Unity project at repo root, not under `My project/`.
+/My project/
+
 /Resources/M2emulator/
+
+# Local-only Honey capture / review intermediates.
+/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_IncomingDump/
+/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_IncomingDumpAuto/
+/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_LocalScreenshots/
+/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_review/
+/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_review_*/
+/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_texcache_*.csv
+/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_texcache_report.csv
