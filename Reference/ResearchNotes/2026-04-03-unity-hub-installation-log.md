@@ -17,7 +17,7 @@
 ### Context
 - 这是第一次配置 Unity，本轮目标不是直接做角色/材质开发，而是先把 Unity 编辑器和工程结构搭起来。
 - `Assets/README.md` 明确要求 Unity 工程直接建在仓库根目录 `C:\Users\dish\projects\NewFighingVipers`，不要再套一层 `UnityProject/`。
-- 当前仓库已有 `Assets/`，但还没有 `ProjectSettings/ProjectVersion.txt` 和 `Packages/`，说明 Unity 工程尚未完成初始化。
+- 当前仓库根目录已迁入 `Assets/`、`Packages/`、`ProjectSettings/`，并且 `ProjectSettings/ProjectVersion.txt` 已确认是 Unity `6000.4.1f1`。
 
 ### Findings
 - Unity Hub 安装入口应以官方文档为准：
@@ -38,10 +38,10 @@
 ### Evidence
 - Screenshots: 待补。建议安装过程中遇到关键选项页或报错页时截图留存。
 - Video captures: N/A
-- Extracted files: 待 Unity 初始化后检查是否生成 `ProjectSettings/ProjectVersion.txt`、`Packages/manifest.json`、`Assets/Scenes/` 等文件/目录。
+- Extracted files: 已在仓库根目录生成 `ProjectSettings/ProjectVersion.txt` 和 `Packages/manifest.json`；`Assets/Scenes/` 尚未按项目规范手工建立。
 - Tool output:
   - `Get-Content Assets\README.md -Encoding UTF8` 已确认工程根目录约束和建议目录结构。
-  - `Get-Content ProjectSettings\ProjectVersion.txt` 当前报 `Cannot find path`，说明工程还没初始化。
+  - `Get-Content ProjectSettings\ProjectVersion.txt -Encoding UTF8` 当前返回 `m_EditorVersion: 6000.4.1f1`。
 - Comparison notes:
   - 本地 `Assets/README.md` 的目录约束与 Unity Hub 默认“新建项目时创建新目录”习惯可能冲突，所以这一步要特别记录 Hub 的实际行为。
 
@@ -63,6 +63,13 @@
 - 2026-04-03：用户要求把安装交互记录参考相关文档写入 `ResearchNotes`，并表示现在开始安装。
 - 2026-04-03：用户实际安装了 Unity `6000.4.1f1`，参考 release 页面 `https://unity.com/releases/editor/whats-new/6000.4.1f1#notes`，并在新建项目时选择了 `High Definition 3D` 模板。
 - 2026-04-03：用户反馈工程目录还没按预期建立，但 Git 已出现巨量新增文件。Codex 检查后确认 Unity Hub 生成了嵌套 `My project/` 工程目录，且该目录下有大量 `Library/`/`Temp/` 等缓存文件；随后先更新 repo 根目录 `.gitignore` 屏蔽 Unity 生成物和 `/My project/`。
+- 2026-04-03：用户要求直接处理迁移。Codex 将 `My project/Assets` 内容搬到根目录 `Assets/`（保留原有 `Assets/README.md`），并将 `My project/Packages`、`My project/ProjectSettings` 移到仓库根目录；未移动 `Library/`、`Temp/`、`Logs/`、`UserSettings/`。
+- 2026-04-03：用户已从 Unity Hub 打开仓库根目录工程，并成功进入 Unity Editor。下一步按 `Assets/README.md` 先在 `Assets/` 下建立 `Art/Characters/Honey`、`Art/Materials`、`Scenes`、`Scripts`，然后创建一个最小材质测试场景。
+- 2026-04-03：用户已创建 `HoneyMaterialTest` 场景并保存。当前 Hierarchy 截图显示 `Outdoors` 模板自带 `Main Camera`、`Volume Profile`、`Lighting`、`Geometry`，同时又手动新增了 `Plane`、`Directional Light`、`Camera`、`HoneySlot`；下一步应先清理重复的 `Camera` 和 `Directional Light`，保留 `HoneySlot` 作为模型挂点。
+- 2026-04-03：用户已删除重复的 `Camera` 和 `Directional Light`，并将 `HoneySlot` 的 Position 归零。下一步先在 `HoneySlot` 下挂一个占位 `Cube`，再建一个测试材质验证 HDRP 场景显示正常。
+- 2026-04-03：用户已创建 `M_TestHoney` 材质并挂到 `HoneySlot/Cube`；从 `Cube` 的 `Mesh Renderer -> Materials -> Element 0` 截图确认当前材质引用已经是 `M_TestHoney`。
+- 2026-04-03：用户将 `Main Camera` 调整到可在 `Game` 视图中看到 `HoneySlot/Cube`，说明最小测试场景、相机和基础材质链路已可用。下一步准备导入 Honey 模型到 `Assets/Art/Characters/Honey/`。
+- 2026-04-03：用户确认当前手头没有 Honey 的 `.fbx` / `.obj` 模型文件，因此 README 里的“导入 Honey 模型并挂假彩色调试贴图”这一步暂时阻塞。Codex 扫描 `Assets/`、`Reference/`、`Resources/`、`Tools/` 后，仅发现 HDRP 模板自带的 `Assets/Scenes/HoneyMaterialTest/UnityMaterialBall.fbx`，不是 Honey 模型。当前 Unity 侧先保留 `HoneySlot/Cube` 占位场景，下一步应转回 Honey 模型提取/转换来源排查。
 
 ### Relevance to Prototype
 - Gameplay: 先满足后续最小测试场景和角色控制脚本开发前置条件。
@@ -78,7 +85,9 @@
 - 虽然当前已确认 Editor 版本是 `6000.4.1f1`，但还没验证这个版本 + HDRP 模板是否适合后续 Model 2 角色材质/UV 调试；Unity 6000.4.1f1 官方 release notes 里还列有一条与 URP/HDRP 模板版本相关的已知问题 `UUM-137426`，后续若模板资源异常需要回查。
 - 当前 Hub 已经生成了嵌套 `My project/`，这和 `Assets/README.md` 的“Unity 工程直接建在 repo 根目录”要求不一致；后续需要决定是重建工程、迁移 `My project/` 内的有效项目文件，还是用 Hub 的其他入口重新绑定仓库根目录。
 - 还未验证这台机器是否有 Unity license / firewall / file-system permission 相关弹窗或拦截。
-- 仓库根目录仍未生成 `ProjectSettings/` 和 `Packages/`，所以按当前 repo 结构要求来说，根目录工程仍未完成初始化；目前生成的只是嵌套 `My project/` 下的一套 Unity 工程。
+- 仓库根目录已补齐 `ProjectSettings/` 和 `Packages/`，但还未实测“从 Unity Hub 直接 Add/open 仓库根目录”是否能正常打开该工程。
+- 旧的 `My project/` 目录目前仍保留为回退缓存，其中主要剩 `Library/`、`Temp/`、`Logs/`、`UserSettings/`、IDE 工程文件以及空的 `Assets/`/`Packages/` 壳目录；待根目录工程验证通过后再清理。
+- 当前没有 Honey 模型源文件，所以 Unity 侧只能先完成工程/场景/材质占位验证，不能进入真实模型 UV 对照。
 
 ### Decision
 - Use / Maybe / Reject: Use
@@ -87,13 +96,18 @@
 ### Next Action
 - [ ] 用户先完成 Unity Hub 安装和登录，并回报是否遇到账号、网络、防火墙或权限弹窗。
 - [x] 用户在 Hub 里开始安装 LTS Editor，并回报具体版本号与是否勾选了额外模块。
-- [ ] 如果 Hub 在仓库根目录创建项目时报“目录非空”或类似错误，先截图/抄原文，再更新本笔记并调整初始化方案。
-- [ ] 决定如何处理当前误建的 `My project/`：如果确认不要这层嵌套，优先只迁移必要的 `Packages/`、`ProjectSettings/`、`Assets` 内容，不要把 `Library/`、`Temp/`、`Logs/` 一起搬回 repo 根目录。
+- [x] 如果 Hub 在仓库根目录创建项目时报“目录非空”或类似错误，先截图/抄原文，再更新本笔记并调整初始化方案。
+- [x] 决定如何处理当前误建的 `My project/`：如果确认不要这层嵌套，优先只迁移必要的 `Packages/`、`ProjectSettings/`、`Assets` 内容，不要把 `Library/`、`Temp/`、`Logs/` 一起搬回 repo 根目录。
+- [x] 在 Unity Hub 里用 `Add -> Add project from disk` 打开 `C:\Users\dish\projects\NewFighingVipers`，验证根目录工程是否能正常进入 Editor。
+- [ ] 在 Unity Editor 的 Project 窗口里建立 `Assets/Art/Characters/Honey/`、`Assets/Art/Materials/`、`Assets/Scenes/`、`Assets/Scripts/`。
+- [x] 新建一个最小测试场景并保存到 `Assets/Scenes/`，场景里先放地面、Main Camera、Directional Light、Honey 测试占位物体。
+- [ ] 回到模型来源研究，确认 Honey 模型应从哪个工具/格式导出，再导入 `Assets/Art/Characters/Honey/` 替换当前 `Cube` 占位。
+- [ ] 根目录工程确认可用后，再清理旧的 `My project/` 回退目录。
 
 ### Follow-up Files
 - `Assets/README.md`
-- `ProjectSettings/ProjectVersion.txt`（待生成）
-- `Packages/manifest.json`（待生成）
+- `ProjectSettings/ProjectVersion.txt`
+- `Packages/manifest.json`
 
 ### Notes
 - 这份笔记会随着用户实际安装反馈继续追加，优先记录“点了什么、看到什么提示、为什么这么选、最后生成了哪些 Unity 工程文件”。
