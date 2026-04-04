@@ -170,8 +170,6 @@
   - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_manifest.csv`
   - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_Main_sheet.png`
   - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_ColorAlt_P2_sheet.png`
-  - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_normal_texture_lock.md`
-  - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_part_mapping_v1.md`
   - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_LocalScreenshots/VideoRefs/` 本地截图参考目录，仅本机保留，不进 Git
 
 ### Relevance to Prototype
@@ -181,7 +179,6 @@
   - Honey INTRO 和演示对战可以作为动作观察参考，但还没开始系统化拆动作。
 - Art / Model:
   - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/Main` 已经可以作为后续 Honey 低模分件、轮廓和 UV 分析的输入。
-- `_part_mapping_v1.md` 已经整理出第一版 `NormId -> 疑似部位 -> 置信度 -> 证据 -> 待验证点`，当前粗分 `High 11 / Mid 23 / Low 5`，可直接作为假彩色 UV 验证的工作清单。
 - Texture / Material:
   - 当前贴图能看结构，但颜色未还原；不能直接当最终彩色贴图。
 - Audio:
@@ -196,8 +193,7 @@
 
 #### 现状
 - Honey 常态贴图主集合已收敛到 `Main=39`、`ColorAlt_P2=4`，破甲贴图仍明确延期。
-- `_part_mapping_v1.md` 已建立，当前粗分 `High 11 / Mid 23 / Low 5`，可以直接作为下一轮 UV 验证清单。
-- 半自动流程 `WatchTexCacheAndDiff.ps1` 可用，但继续大批量 dump 的边际收益已经下降；现在主线已经从“补 PNG 数量”转成“确认 NormId 到模型 UV/部位的挂接关系”。
+- 半自动流程 `WatchTexCacheAndDiff.ps1` 可用，但继续大批量 dump 的边际收益已经下降；这条文档当前只保留“常态贴图主集合如何锁定”，不再把“直接从灰度贴图猜模型部位/UV”当贴图 pipeline 主线。
 - `Honey_Master_TextureSet` 里的本地候选/自动归档中间产物已清理，只保留 canonical 集合和 `_LocalScreenshots/VideoRefs/`。
 
 #### 主要问题 / 风险
@@ -209,7 +205,7 @@
 
 #### 已定决策
 - 继续把 `Dump texture cache` 作为短期主提取路径，但不再把“继续大批量 dump”当当前主线。
-- `Honey_Master_TextureSet` 继续作为 Honey 常态贴图主集合，主数据结构固定为 `Main/`、`ColorAlt_P2/`、`_manifest.csv`、`_Main_sheet.png`、`_ColorAlt_P2_sheet.png`、`_normal_texture_lock.md`、`_part_mapping_v1.md`。
+- `Honey_Master_TextureSet` 继续作为 Honey 常态贴图主集合，主数据结构固定为 `Main/`、`ColorAlt_P2/`、`_manifest.csv`、`_Main_sheet.png`、`_ColorAlt_P2_sheet.png`；主集合锁定规则压缩归档到本文附录 A。
 - 破甲贴图、破损部件、破甲系统接入本轮继续后置。
 - Lua 实时扫 texture RAM 和 `SendDumpTextureCache.ps1` 外部菜单注入都不作为当前正式流程。
 - 颜色还原/palette 研究后置到“UV/部位挂接基本稳定之后”。
@@ -219,19 +215,15 @@
 - Model 2 模拟器后续主要作为视觉参考工具，还是继续投入时间做更深的 ROM/运行时数据提取。
 
 #### 下一步计划
-- 先按 `_part_mapping_v1.md` 做假彩色 UV 验证，优先攻靴前竖条、后背中线、裙摆花边、手套袖口、后发束。
-- 根据假彩色结果回写 `_part_mapping_v1.md` 和 `_normal_texture_lock.md`，把 `Mid/Low` 项逐步收敛成确定映射。
-- 如果某块在假彩色验证时仍缺视角或缺贴图，再回到 `_LocalScreenshots/VideoRefs/` 或小批量 dump 做定向补充。
-- UV/部位挂接稳定后，再单独启动 palette/颜色还原研究；破甲仍继续后置。
+- 若继续走贴图 pipeline，优先做两件事：定向补常态覆盖缺口，以及单开 palette/颜色来源研究；破甲仍继续后置。
+- “直接凭灰度贴图形状猜 NormId -> 身体部位/UV”的路线已经归档到 `2026-04-03-model2-honey-model-extraction-routes.md` 附录 A，并标记为不成功路径，不再作为当前贴图主线。
 
 #### 本地中间产物管理规则
 - 截图资料、自动归档 dump、候选 CSV、review sheet 只做本地分析用，不进入 Git；`.gitignore` 已覆盖 `_IncomingDump/`、`_IncomingDumpAuto/`、`_LocalScreenshots/`、`_candidate_review*/`、`_candidate_texcache_*.csv`。
 - 每轮筛选收敛后，只保留 canonical 结果和研究笔记；本地中间目录可以整批清掉。
-- 清理时不要删 `Main/`、`ColorAlt_P2/`、manifest、sheet、lock、mapping 文档。
+- 清理时不要删 `Main/`、`ColorAlt_P2/`、manifest、sheet；贴图锁定规则和失败路径归档分别保留在本文附录 A 和 `2026-04-03-model2-honey-model-extraction-routes.md` 附录 A。
 
 ### Follow-up Files
-- `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_normal_texture_lock.md`
-- `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_part_mapping_v1.md`
 - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_manifest.csv`
 - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_Main_sheet.png`
 - `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_ColorAlt_P2_sheet.png`
@@ -241,3 +233,21 @@
 
 ### Notes
 - 当前文档里的“推测/判断”已经尽量和“已验证事实”分开写；尤其是颜色还原、texture RAM 来源、palette 依赖这些部分，目前都应该视为后续研究假设，而不是最终结论。
+
+### Appendix A - Honey Normal Texture Lock 压缩版
+- 来源：由 `2026-04-03-honey-normal-texture-lock.md` 压缩合并进本文，原独立笔记删除以避免重复维护。
+- 范围：只锁 Honey 常态/非破甲贴图；破甲贴图、破损部件、破甲状态切换素材全部延期。
+- Canonical 目录约定：
+  - `Main/`：每个 `NormId` 只保留 1 张主版本贴图，优先 P1/主配色来源。
+  - `ColorAlt_P2/`：只存与 `Main/` 同 `NormId` 但 `ContentHash` 不同的 P2 配色变体。
+  - 暂不批量重命名 PNG，继续保留 `SourceId_DumpHash.png` 文件名，避免丢失来源线索。
+  - 新 dump 进入后，先按 `NormId + ContentHash` 去重，再决定是否升格进 `Main` 或 `ColorAlt_P2`。
+- 当前锁定摘要：
+  - Face：`9104012` 正脸主贴图；`A0D4008 / E884008` 耳侧；`A906009 / A926009 / 8926009` 侧脸口眼相关贴图；`9104012` 有 P2 变体。
+  - Hair：`8106013` 刘海；`9144012` 侧发；`B044012 / C00600A / C80600A / D00600A / E84600A` 后侧发束候选；`8106013 / 9144012` 有 P2 变体。
+  - Body_Clothes：`8086012 / 80C6012 / 90C6012` 裙摆花边与褶皱；`D044012 / D0C6012 / B144012 / C0C6012` 胸腹衣身；`D004012 / A084012 / D084012 / E044012 / F044012 / B0C4011 / B084012` 背侧/躯干曲面和扣件；`A024011 / A044011 / A064011 / B004011 / B024011 / C004011 / C024011 / C054010 / C106012` 竖条/连接件候选；`C084012` 有 P2 变体。
+  - Ornament：`B04600A / B84600A` 白色蕾丝/装饰片候选。
+- 已知缺口：
+  - 起身、胜利动作、INTRO 特写、鞋/腿/手臂更清楚的侧背视角还没做系统化常态补 dump。
+  - 鞋、手臂/手套、腿部/袜子、背侧衣身、头发背侧、耳侧/饰件挂接是否已被当前主集合完整覆盖，仍未被模型/UV 验证。
+  - 颜色还原/palette 提取继续后置；当前 canonical 集合只锁“灰度结构贴图集合和新增入库规则”。

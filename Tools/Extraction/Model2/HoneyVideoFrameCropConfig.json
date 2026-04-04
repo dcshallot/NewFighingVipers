@@ -1,0 +1,119 @@
+﻿[
+    {
+        "VideoStem":  "__template__",
+        "Enabled":  false,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Run CropHoneyFrameSamples.ps1 once to auto-create one entry per video, then tune each crop box."
+    },
+    {
+        "VideoStem":  "05fed69f-4329-43fe-996c-adc6b2df9ab3",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "283de2a1-cb66-44bd-aef4-4924a03cd415",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "2f636172-c4f7-4d0f-adc8-d47521e634d1",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "52b549e0-dd05-411f-aeb4-74d53fd163a1",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "92747748-a3e8-4e4f-8ad5-73fccb215334",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "987b29ee-a1f2-4d1e-93ce-68f4e165ca9e",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "ad7958d4-7a86-46b8-a302-1b225d4369d0",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "b674c32d-5886-4750-bbdb-b0af17269ea7",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "b771fbc6-f17a-4b01-8a9e-bba438fa7480",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "c6530ed2-ff96-4d0d-9ba3-3d78ca674588",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "d3b6e0a8-a0a8-4faa-9cc9-74297467e6e0",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    },
+    {
+        "VideoStem":  "f9bf3332-c4ed-467e-b2c5-cf10e9473dfa",
+        "Enabled":  true,
+        "CropNormX":  0.25,
+        "CropNormY":  0.05,
+        "CropNormWidth":  0.5,
+        "CropNormHeight":  0.9,
+        "Notes":  "Default centered crop. Adjust to keep only Honey full body."
+    }
+]

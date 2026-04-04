@@ -8,6 +8,8 @@
 [Uu]ser[Ss]ettings/
 [Mm]emoryCaptures/
 [Rr]ecordings/
+__pycache__/
+*.pyc
 
 # Unity-generated IDE/project files.
 .vs/
@@ -34,8 +36,24 @@ sysinfo.txt
 /My project/
 
 /Resources/M2emulator/
+/Resources/ffmpeg-8.1/
+/Resources/ffmpeg/
+/Resources/ffmpeg-release-essentials.zip
+/Resources/ffmpeg-8.1-essentials_build/
+/Resources/noesisv/
+/Resources/ninjaripper/
+
+# Local-only third-party model generation dependencies.
+/Tools/Generation/Hunyuan3D/cache/
+/Tools/Generation/Hunyuan3D/vendor/
+
+# Local-only generated model artifacts.
+/Assets/Generated/
+/Assets/Generated.meta
 
 # Local-only Honey capture / review intermediates.
+/Reference/Captures/
+/Reference/OriginalAssets/
 /Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_IncomingDump/
 /Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_IncomingDumpAuto/
 /Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_LocalScreenshots/
