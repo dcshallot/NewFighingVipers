@@ -38,13 +38,13 @@ Use a **Windows PC** as the main machine for Unity, emulator tooling, controller
 ---
 
 ## ⚙️ Engine & Core Stack
-- Unity LTS on Windows PC
+- Unity LTS on Windows PC (**local-only project, not synced to Git**)
 - C# gameplay code with data-driven combat definitions
 - Unity Input System
 - Animator-based prototype animation control
 - Cinemachine for camera exploration
 - Blender for inspection, cleanup, and conversion
-- Git for version control
+- Git for version control of **technical documents and tool scripts only**
 
 ### Recommended Technical Scope
 - Offline local prototype only
@@ -211,6 +211,33 @@ Target: **Near €0 additional cost**
 
 ---
 
+## 🗂️ Repository Sync Policy
+
+### Git-Traced Scope
+- `README.md`
+- `Reference/ResearchNotes/`
+- `Tools/Extraction/`
+- `Tools/Generation/` in-house scripts and technical wrappers only
+- `Tools/Windows/`
+
+### Local-Only Scope
+- `Assets/`
+- `Packages/`
+- `ProjectSettings/`
+- `Library/`, `Temp/`, `Logs/`, `UserSettings/`
+- `Resources/`
+- `Reference/OriginalAssets/`
+- `Reference/Captures/`
+- Third-party model caches and vendor checkouts under `Tools/Generation/**/cache/` and `Tools/Generation/**/vendor/`
+
+### Current Rule
+Unity development still happens locally, but the Unity project itself is treated as a **non-synced working directory**.
+Git is used as a **technical knowledge and tooling repository**, not as the transport layer for Unity scenes, imported art, generated models, emulator dumps, or binary research assets.
+
+If this project later needs multi-machine Unity sync, switch to a separate policy first, then re-evaluate Git LFS or Perforce. Do not silently reintroduce large Unity/art binaries into normal Git history.
+
+---
+
 ## 📚 Re-Evaluated External References
 
 Current direction for the first playable slice:
@@ -237,29 +264,13 @@ Current direction for the first playable slice:
 
 ## 🧱 Project Structure
 
-Assets/
-  Art/
-    Characters/
-    Arena/
-    Materials/
-    Textures/
-    UI/
-  Animations/
-  Audio/
-  Prefabs/
-  Scenes/
-  Scripts/
-    Core/
-    Combat/
-    Characters/
-    UI/
-    Camera/
-    Arena/
 Reference/
   Captures/
+    # Local-only capture/video/image intermediates
   MoveLists/
   ResearchNotes/
   OriginalAssets/
+    # Local-only curated art references and extracted binaries
     Models/
     Textures/
     Audio/
@@ -270,7 +281,16 @@ Resources/
 Tools/
   Extraction/
     Model2/
+  Generation/
+    Hunyuan3D/
+      # Keep only our scripts/config in Git; vendor/cache/output stay local-only
+  Windows/
 Docs/
+
+# Local-only Unity project directories:
+# Assets/
+# Packages/
+# ProjectSettings/
 
 ---
 
@@ -283,8 +303,7 @@ Docs/
 - Collect reference captures and notes
 
 ### Phase 1 — Playable Arena Setup
-- Create the Unity project
-- Import it into this repo
+- Create the Unity project locally at repo root, but keep Unity-owned folders ignored by Git
 - Build a basic arena scene
 - Set up a readable camera
 - Place two test fighters
@@ -378,7 +397,7 @@ The prototype is successful if:
   - [ ] Try one texture extraction path or one audio extraction path first
   - [ ] Verify the output files can be organized and reused
 
-- [ ] Create the Unity project and import it into this repo
+- [ ] Create the Unity project locally at repo root, but keep `Assets/`, `Packages/`, and `ProjectSettings/` ignored by Git
 - [ ] Build one basic arena scene with two test fighters and a readable camera
 - [ ] Implement movement, punch, kick, and block with data-driven move definitions
 - [ ] Add hit detection, health, hit stop, knockback, and basic audio / UI feedback
