@@ -6,6 +6,12 @@ param(
     [string]$OutputDir = "Assets\Generated\Hunyuan3D\Honey",
 
     [Parameter(Mandatory = $false)]
+    [string]$LeftName = "",
+
+    [Parameter(Mandatory = $false)]
+    [string]$RightName = "right.png",
+
+    [Parameter(Mandatory = $false)]
     [string]$PythonExe = "python",
 
     [Parameter(Mandatory = $false)]
@@ -112,6 +118,8 @@ Hunyuan3D Windows setup sketch:
 Notes:
 - Shape-only generation usually needs about 6 GB VRAM.
 - Shape+texture generation usually needs about 16 GB VRAM.
+- Three-view input uses front.png / side.png / back.png.
+- Four-view input uses front.png / left.png / back.png / right.png.
 - If side.png is actually a left-side view already, pass -SideSource Left.
 - -TextureInputMode FrontLeftBack reuses the same normalized front/left/back views for Paint.
 "@
@@ -145,6 +153,8 @@ $pythonArgs = @(
     $scriptPath,
     "--input-dir", $inputDirFullPath,
     "--output-dir", $outputDirFullPath,
+    "--left-name", $LeftName,
+    "--right-name", $RightName,
     "--side-source", $SideSource.ToLowerInvariant(),
     "--background-mode", $BackgroundMode.ToLowerInvariant(),
     "--floodfill-threshold", $FloodfillThreshold,

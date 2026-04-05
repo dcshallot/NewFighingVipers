@@ -61,7 +61,7 @@ def parse_args() -> argparse.Namespace:
         "--input-dir",
         type=Path,
         default=Path("Reference/Captures/Honey/TurnaroundSplit"),
-        help="Directory containing front.png, side.png, and back.png.",
+        help="Directory containing front/back plus left or side, and optionally right.",
     )
     parser.add_argument(
         "--output-dir",
@@ -70,8 +70,10 @@ def parse_args() -> argparse.Namespace:
         help="Directory for generated GLB and preprocessed views.",
     )
     parser.add_argument("--front-name", default="front.png")
+    parser.add_argument("--left-name", default="")
     parser.add_argument("--side-name", default="side.png")
     parser.add_argument("--back-name", default="back.png")
+    parser.add_argument("--right-name", default="right.png")
     parser.add_argument(
         "--side-source",
         choices=("left", "right"),
@@ -301,19 +303,53 @@ def fit_subject_to_square_canvas(
 
 def load_normalized_views(args: argparse.Namespace) -> Dict[str, Image.Image]:
     input_dir = resolve_existing_path(args.input_dir)
-    source_files = {
-        "front": input_dir / args.front_name,
-        "left": input_dir / args.side_name,
-        "back": input_dir / args.back_name,
-    }
+    source_files = {}
+
+    if args.front_name:
+        source_files["front"] = {
+            "path": input_dir / args.front_name,
+            "mirror": False,
+            "required": True,
+        }
+
+    if args.back_name:
+        source_files["back"] = {
+            "path": input_dir / args.back_name,
+            "mirror": False,
+            "required": True,
+        }
+
+    left_source_name = args.left_name or args.side_name
+    if left_source_name:
+        left_source_path = input_dir / left_source_name
+        source_files["left"] = {
+            "path": left_source_path,
+            "mirror": bool(not args.left_name and args.side_source == "right"),
+            "required": True,
+        }
+
+    if args.right_name:
+        right_source_path = input_dir / args.right_name
+        if right_source_path.is_file():
+            source_files["right"] = {
+                "path": right_source_path,
+                "mirror": False,
+                "required": False,
+            }
+
+    if not source_files:
+        raise ValueError("No input views configured. Provide at least one of front/left(side)/back/right.")
 
     views: Dict[str, Image.Image] = {}
-    for view_name, source_path in source_files.items():
+    for view_name, source_info in source_files.items():
+        source_path = source_info["path"]
         if not source_path.is_file():
-            raise FileNotFoundError(f"Missing {view_name} source image: {source_path}")
+            if source_info["required"]:
+                raise FileNotFoundError(f"Missing {view_name} source image: {source_path}")
+            continue
 
         image = Image.open(source_path).convert("RGBA")
-        if view_name == "left" and args.side_source == "right":
+        if source_info["mirror"]:
             image = ImageOps.mirror(image)
 
         image = remove_background(
@@ -338,9 +374,10 @@ def save_preprocessed_views(views: Dict[str, Image.Image], output_dir: Path) -> 
     for name, image in views.items():
         image.save(preview_dir / f"{name}.png")
 
+    contact_order = [name for name in ("front", "left", "back", "right") if name in views]
     canvas_size = next(iter(views.values())).size[0]
-    contact_sheet = Image.new("RGBA", (canvas_size * 3, canvas_size), (32, 32, 32, 255))
-    for index, name in enumerate(("front", "left", "back")):
+    contact_sheet = Image.new("RGBA", (canvas_size * len(contact_order), canvas_size), (32, 32, 32, 255))
+    for index, name in enumerate(contact_order):
         tile = Image.new("RGBA", (canvas_size, canvas_size), (255, 255, 255, 255))
         tile.alpha_composite(views[name])
         contact_sheet.paste(tile, (index * canvas_size, 0))
@@ -464,12 +501,24 @@ def export_meshes(args: argparse.Namespace, views: Dict[str, Image.Image], outpu
     return result
 
 
-def write_manifest(args: argparse.Namespace, output_dir: Path, preview_dir: Path, result: Dict[str, str]) -> Path:
+def write_manifest(
+    args: argparse.Namespace,
+    output_dir: Path,
+    preview_dir: Path,
+    views: Dict[str, Image.Image],
+    result: Dict[str, str],
+) -> Path:
     manifest_path = output_dir / "Honey_mv_generation_manifest.json"
     payload = {
         "input_dir": str(resolve_existing_path(args.input_dir)),
         "output_dir": str(output_dir),
         "preview_dir": str(preview_dir),
+        "front_name": args.front_name,
+        "left_name": args.left_name,
+        "side_name": args.side_name,
+        "back_name": args.back_name,
+        "right_name": args.right_name,
+        "available_views": list(views.keys()),
         "side_source": args.side_source,
         "background_mode": args.background_mode,
         "canvas_size": args.canvas_size,
@@ -509,7 +558,7 @@ def main() -> int:
         for key, value in result.items():
             print(f"{key}: {value}")
 
-    manifest_path = write_manifest(args, output_dir, preview_dir, result)
+    manifest_path = write_manifest(args, output_dir, preview_dir, views, result)
     print(f"Manifest saved to: {manifest_path}")
     return 0
 
