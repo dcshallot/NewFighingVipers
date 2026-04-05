@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $false)]
-    [string]$VideoDir = "Reference\OriginalAssets\Textures\FightingVipers\Honey\Honey_Master_TextureSet\_LocalScreenshots\VideoRefs",
+    [string]$VideoDir = "Resources\VideoRefs",
 
     [Parameter(Mandatory = $false)]
     [string]$OutputRoot = "Reference\Captures\Honey\FrameSamplesRaw",
@@ -38,9 +38,14 @@ function Resolve-FfmpegExe {
         }
     }
 
-    $repoCandidate = Join-Path (Get-Location).Path "Resources\ffmpeg\bin\ffmpeg.exe"
-    if (Test-Path -LiteralPath $repoCandidate) {
-        return (Resolve-Path -LiteralPath $repoCandidate).Path
+    $repoCandidates = @(
+        (Join-Path (Get-Location).Path "Resources\ffmpeg\bin\ffmpeg.exe"),
+        (Join-Path (Get-Location).Path "Resources\ffmpeg-8.1-essentials_build\bin\ffmpeg.exe")
+    )
+    foreach ($repoCandidate in $repoCandidates) {
+        if (Test-Path -LiteralPath $repoCandidate) {
+            return (Resolve-Path -LiteralPath $repoCandidate).Path
+        }
     }
 
     $pathCommand = Get-Command ffmpeg -ErrorAction SilentlyContinue
@@ -74,6 +79,9 @@ foreach ($video in $videos) {
     $videoOutputDir = Join-Path $outputRootPath $videoStem
     if (-not (Test-Path -LiteralPath $videoOutputDir)) {
         [void](New-Item -ItemType Directory -Path $videoOutputDir -Force)
+    }
+    else {
+        Get-ChildItem -LiteralPath $videoOutputDir -Filter 'frame_*.png' -File | Remove-Item -Force
     }
 
     $outputPattern = Join-Path $videoOutputDir "frame_%05d.png"

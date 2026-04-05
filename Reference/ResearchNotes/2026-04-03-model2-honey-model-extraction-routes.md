@@ -17,6 +17,7 @@
 
 ### Findings
 - 当前主线：`VideoRefs` 视频录像抽帧 -> 人工选正/侧/背参考图 -> kelingAI生成标准三视图 -> `Hunyuan3D-2mv` 输出白模 GLB -> 删除断开的薄片噪声组件 -> 放入 Unity 检查轮廓。
+- 2026-04-04 新对照结论：精选原始截图，优先选背景较干净、四肢轮廓清楚的帧，或先用 AI 做轻度背景过滤后，直接喂 Meshy 生成模型/贴图，当前效果整体**优于**“先让 AI 生成三视图设定图，再把三视图喂给另一轮 AI 建模”的二跳路线；同时**不推荐**“Hunyuan 白模 -> Meshy 再上材质”作为当前主线，因为实测贴图和几何对位容易偏，材质很难贴准。
 - 路径 1，视频抽帧：`Tools/Extraction/Model2/ExportHoneyVideoFrameSamples.ps1` 能对 `Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_LocalScreenshots/VideoRefs/` 执行“每 3 秒抽 1 帧”，输出到 `Reference/Captures/Honey/FrameSamplesRaw/`，并生成 `_frame_samples_raw_manifest.csv`。
 - 路径 2，人工挑图：自动裁剪不稳定后，改为直接浏览 `Reference/Captures/Honey/FrameSamplesFlat/`，人工挑正面/侧面/背面参考帧，这条方式虽然人工量更高，但对 Honey 和对手同屏、UI 干扰、出招遮挡更稳。
 - 路径 3，9张图进可灵https://klingai.com/, prompt'根据这些参考图，生成 Honey 的角色三视图设定图：正面、侧面、背面。要求：自然站立，高清, 手臂T-pose,发辫对称下垂',抽卡3次,选择合适的照片提升清晰度,导出,切开
@@ -75,7 +76,7 @@
 
 ### Decision
 - Use / Maybe / Reject: `Use`
-- Reason: 当前最可执行主线是“视频参考 -> 人工挑帧 -> 标准三视图 -> Hunyuan3D-2mv 白模 -> mesh component 清理 -> Unity/Blender 继续修形”。Ninja Ripper 直接 mesh 重建、批量自动裁剪、rembg 自动抠背景、未编译 texgen 贴图都已验证存在明确问题，不作为当前第一优先级主线。
+- Reason: 当前更推荐把“视频参考 -> 人工精选干净截图/轻度 AI 去背景 -> 直接喂 Meshy 出模型/贴图/rig -> Unity 检查”提到优先级更高的位置，因为实测细节保留和整体观感好于“先 AI 生三视图再 AI 建模”的二跳路线；原来的“标准三视图 -> Hunyuan3D-2mv 白模”仍可作为白模对照分支，但短期**不推荐**再走 “Hunyuan 白模 -> Meshy 上材质”，因为贴图对位误差明显。Ninja Ripper 直接 mesh 重建、批量自动裁剪、rembg 自动抠背景、未编译 texgen 贴图都已验证存在明确问题，不作为当前第一优先级主线。
 
 ### Next Action
 - [ ] 在 Unity 里 Reimport `Assets/Generated/Hunyuan3D/HoneyFloodfill128Clean/Honey_white_mv.glb`，用灰材质检查体块、比例、异常破面、正反面问题。
@@ -96,6 +97,19 @@
 - 本笔记已把 `Reference/ResearchNotes/2026-04-03-honey-video-frame-crop-pipeline.md` 的抽帧/裁剪流程并入“成功路径/失败路径”总结。
 - 旧版文件内容在 PowerShell 默认编码下显示为乱码，本次直接重写为 UTF-8 中文结构化笔记。
 - https://huggingface.co/tencent/Hunyuan3D-2mv
+
+### 2026-04-04 Update - Hunyuan3D Paint 手工跑通，但贴图质量暂不可用
+- 白模输入确认：本次 Paint 没有重新生成白模，而是直接复用 `Assets/Generated/Hunyuan3D/HoneyFloodfill128Clean/Honey_white_mv.glb`。
+- 今日新增产物：`Assets/Generated/Hunyuan3D/HoneyFloodfill128Clean/Honey_textured_mv_manual.glb`、`Honey_textured_mv_manual_baseColor.png`、`Honey_textured_mv_manual_render_y000.png`、`Honey_textured_mv_manual_render_y090.png`、`Honey_textured_mv_manual_render_y180.png`。
+- texgen 扩展编译过程：旧的 `setup.py install` 长时间卡住，不是正常编译慢，而是当前 PowerShell 环境里存在 `Path/PATH` 重复键，venv Python 会再拉起系统 Python 子进程，导致 ninja 构建链路跑偏；改成拆细后的手工编译/链接后，分别生成 `custom_rasterizer_kernel.pyd` 和 `mesh_processor.pyd` 并手工放入 `Tools/Generation/Hunyuan3D/vendor/Hunyuan3D-2/.venv/Lib/site-packages/`。
+- 编译细节：`grid_neighbor.cpp`、`rasterizer.cpp`、`mesh_processor.cpp` 用 MSVC `cl.exe` 编译；`rasterizer_gpu.cu` 用 `nvcc` 编译时，CUDA 12.1 + MSVC 14.44 需要额外加 `-allow-unsupported-compiler` 和 `_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH` 绕过版本检查；链接 `custom_rasterizer_kernel.pyd` 时遇到过 `LNK1104: 无法打开文件 msvcprt.lib`，补 MSVC/Windows Kits `/LIBPATH` 后解决。
+- Paint pipeline 加载过程：`Hunyuan3DPaintPipeline.from_pretrained('tencent/Hunyuan3D-2')` 在当前受限网络环境下不能直接在线取权重，改为读取本地 snapshot `Tools/Generation/Hunyuan3D/cache/huggingface/hub/models--tencent--Hunyuan3D-2/snapshots/9cd649ba6913f7a852e3286bad86bfa9a2d83dcf`；同时显式设置 `HF_HOME` 和 `HF_MODULES_CACHE` 指向仓库内 cache，避免写 `C:\Users\dish\.cache\huggingface\modules` 触发权限问题。
+- torch/transformers 兼容问题：当前 venv 的 `torch==2.5.1+cu121` 会被 `transformers` 的 `check_torch_load_is_safe` 拦住 `.bin` 权重加载，手工 monkeypatch `transformers.utils.import_utils.check_torch_load_is_safe` 和 `transformers.modeling_utils.check_torch_load_is_safe` 后可加载本地 Paint pipeline。
+- 多视图贴图输入改造：为了让 Paint 尽量复用 2mv 的三视图输入，已改 `Tools/Generation/Hunyuan3D/GenerateHoneyMvGlb.py` 支持 `--texture-input-mode front-left-back`，并把 `hy3dgen/texgen/utils/multiview_utils.py` 里的 `camera_info_ref` 从写死 `[[0]]` 改为按输入参考图数量生成 `[list(range(num_ref))]`。
+- 本次手工运行结果：调用 `pipe(mesh, image=[front, left, back])` 成功导出 `Honey_textured_mv_manual.glb`，单次贴图生成耗时约 384 秒；该 GLB 不是空壳，mesh 约 `302560` 顶点、`391366` 面，`PBRMaterial.baseColorTexture` 存在，贴图尺寸 `2048x2048`。
+- 贴图质量验收：导出的 `Honey_textured_mv_manual_baseColor.png` atlas 上黑/白噪声碎块很多，UV 岛分布很碎；用 `trimesh.Scene.save_image()` 渲染正/侧/背预览后，能看到红裙、黑发、靴子等颜色确实贴上了，但脸部、发梢、轮廓边缘有明显黑噪点，背部两片白色“翅膀状”结构更像白模几何本身错误，不是单纯贴图问题。
+- 额外依赖：为了渲染预览，在 Hunyuan venv 里安装了 `pyglet-1.5.31`；未安装前 `trimesh.Scene.save_image()` 会报 `ModuleNotFoundError: No module named 'pyglet'`。
+- 当前结论：`AI 三视图 -> Hunyuan3D-2mv 白模 -> Hunyuan3D Paint 贴图` 这条链路已经技术性跑通，但今天这版贴图质量仍不能直接用于游戏资产；短期不建议把 Paint 结果当成可用成品贴图，只适合继续做对照实验，例如同一白模下对比 `front` 单图 vs `front-left-back` 三图、先重做更干净白模再 Paint、或回到 Model 2 原始贴图提取路线做材质参考。
 
 ### Appendix A - `honey-part-mapping-v1` 压缩归档（失败路径）
 - 来源：由 `2026-04-03-honey-part-mapping-v1.md` 压缩合并进本文，原独立笔记删除以避免重复维护。

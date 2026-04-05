@@ -1,18 +1,19 @@
-## Unity Hub / Editor Installation Log
+## Unity Project Setup / Model Import Log
 
 ### Meta
 - Date: 2026-04-03
-- Topic: Unity Hub / Unity Editor 安装与 NewFighingVipers 仓库根目录工程初始化
+- Topic: Unity Hub / Unity Editor 安装、NewFighingVipers 仓库根目录工程初始化、FBX/GLB 模型导入检查
 - Source Type: Official documentation / local repo notes / assistant-user setup log
 - Source Name: Unity Hub docs + Unity Support + `Assets/README.md`
 - Link: https://docs.unity.com/hub/install-hub ; https://docs.unity.com/hub/add-editor ; https://support.unity.com/hc/en-us/articles/205637449-How-do-I-download-Unity- ; https://unity.com/releases/editor/whats-new/6000.4.1f1
-- Local Path: `Assets/README.md`
+- Local Path: `Reference/ResearchNotes/2026-04-03-unity-project-setup-and-model-import-log.md`
 - Status: `testing`
 - Priority: `high`
 - Owner: dish / Codex
 
 ### Goal
 - 记录第一次安装 Unity Hub / Unity Editor 并把本仓库初始化成 Unity 工程的实际操作顺序、关键选择、踩坑风险和后续验证点。
+- 记录从 Meshy/Hunyuan 模型下载、zip 解压、放置目录规划，到 Unity Inspector / Scene 里检查模型外观、材质、Humanoid Rig、动画 clip 的操作流程和已知问题。
 
 ### Context
 - 这是第一次配置 Unity，本轮目标不是直接做角色/材质开发，而是先把 Unity 编辑器和工程结构搭起来。
@@ -56,6 +57,16 @@
   - `Assets/Scripts/`
 - 第 5 步：搭一个最小测试场景，先只放地面、相机、灯光、Honey 测试挂点。
 
+### FBX / GLB 模型导入与检查流程
+- 资源落盘：Meshy 下载的 `FBX zip` 不要直接散放在 `Assets/Generated/Meshy/` 根目录，优先为每个模型单独建子目录，例如 `Assets/Generated/Meshy/Meshy_AI_keling_filtered_honey_biped/`，把 zip 放进去并在该目录内解压。Unity 不直接使用 zip，真正参与导入的是解压后的 `.fbx/.glb/texture/material` 文件。
+- 先确认格式：如果目录里只有 `.glb`，Unity 侧可用于快速拖进 Scene 看静态外观，但不一定会出现 `Model / Rig / Animation / Materials` 这套 FBX 导入页签；如果要走 `Humanoid -> Configure...` 和 Avatar 映射检查，优先回 Meshy 下载 `FBX` 版。
+- 正确选中对象：`Model/Rig/Animation/Materials` 页签只会在 Project 窗口里选中导入的 `FBX` 资源文件时出现；如果选中的是 `zip`、`.glb`，或 Scene 里的实例对象，Inspector 看到的会是对象组件面板，不是模型导入设置页。
+- Model 页：在 Project 里选中 `FBX` 后，先看 `Model` 页，通常先把 `Scale Factor` 设为 `1` 并 `Apply`，然后把模型拖到 Scene 里检查整体大小、朝向和落点是否正常。
+- Rig 页：`Animation Type = Humanoid`，`Avatar Definition = Create From This Model`，点 `Apply` 后再点 `Configure...` 进 Avatar Mapping；骨骼全绿说明 Humanoid 映射通过，黄色表示有警告需检查，红色通常是缺骨或映射错误。
+- Materials 页：如果模型进 Scene 后是灰的，回到 `FBX` 的 `Materials` 页，依次点 `Extract Textures...` 和 `Extract Materials...`，目标目录选当前模型解压目录，然后 `Apply`。再检查 Scene 里角色子物体的 `Skinned Mesh Renderer -> Materials` 是否已挂上解出的材质球。
+- Animation 页：如果 FBX 自带动作，勾 `Import Animation` 并 `Apply`。在 Project 里新建 `Animator Controller`，双击打开后把 FBX 下展开的 clip 拖进 Animator 设为默认状态，再把 controller 挂到 Scene 里角色对象的 `Animator -> Controller`。若 Unity 警告某个 clip `length of 0 frames (start=0, end=0)`，说明该 clip 是空动画，静态外观/骨架可以先看，但变形验收要回 Meshy 重新导出带关键帧的动画，或把 FBX 上传 Mixamo 套 `Idle/Walk` 后再回 Unity。
+- Scene 检查重点：优先看脸、头发、裙子、袖口、背面几何有没有明显破面/毛刺/多余块，贴图是否有拉伸、脏边、五官错位，Humanoid Avatar 是否全绿，基础动作下肩/肘/髋/膝/裙摆/双马尾是否塌陷或穿模。
+
 ### Interaction Log
 - 2026-04-03：用户提出“根据 `Assets\README.md` 先教我配置 Unity，我从来没搞过”。
 - 2026-04-03：Codex 读取 `Assets/README.md` 和仓库根目录，确认 Unity 工程应建在 repo 根目录，且当前缺少 `ProjectSettings/ProjectVersion.txt`，说明还未初始化 Unity 工程。
@@ -70,11 +81,12 @@
 - 2026-04-03：用户已创建 `M_TestHoney` 材质并挂到 `HoneySlot/Cube`；从 `Cube` 的 `Mesh Renderer -> Materials -> Element 0` 截图确认当前材质引用已经是 `M_TestHoney`。
 - 2026-04-03：用户将 `Main Camera` 调整到可在 `Game` 视图中看到 `HoneySlot/Cube`，说明最小测试场景、相机和基础材质链路已可用。下一步准备导入 Honey 模型到 `Assets/Art/Characters/Honey/`。
 - 2026-04-03：用户确认当前手头没有 Honey 的 `.fbx` / `.obj` 模型文件，因此 README 里的“导入 Honey 模型并挂假彩色调试贴图”这一步暂时阻塞。Codex 扫描 `Assets/`、`Reference/`、`Resources/`、`Tools/` 后，仅发现 HDRP 模板自带的 `Assets/Scenes/HoneyMaterialTest/UnityMaterialBall.fbx`，不是 Honey 模型。当前 Unity 侧先保留 `HoneySlot/Cube` 占位场景，下一步应转回 Honey 模型提取/转换来源排查。
+- 2026-04-04：Meshy 模型导入验证补充。用户已把 Meshy 生成结果解压到 `Assets/Generated/Meshy/Meshy_AI_keling_filtered_honey_biped/`，但该目录当前只有 `.glb` 和 `.meta`，没有 `.fbx`，因此在 Unity 里点这些 `.glb` 时看不到此前基于 FBX 的 `Model` 页；若要继续做 Humanoid / Configure 流程，需要回 Meshy 另下 FBX 版。静态外观可以先直接把 `.glb` 拖进 Scene 看。
 
 ### Relevance to Prototype
 - Gameplay: 先满足后续最小测试场景和角色控制脚本开发前置条件。
-- Animation: 先不涉及。
-- Art / Model: 后续 Honey 模型和材质导入路径要固定在 `Assets/Art/Characters/Honey/`。
+- Animation: 已开始验证 Humanoid Avatar 映射和 FBX 自带 clip 是否有有效关键帧。
+- Art / Model: 后续 Honey 模型和材质导入路径要尽量按“每个来源/版本一个子目录”管理；生成类中间结果当前可先放 `Assets/Generated/Meshy/<ModelName>/` 或 `Assets/Generated/Hunyuan3D/<RunName>/`。
 - Texture / Material: 后续假彩色 UV 调试材质测试依赖 Unity 工程先建好。
 - Audio: 先不涉及。
 - Extraction pipeline: 本轮只负责把 Unity 工作区准备好，方便后续把 `Reference/OriginalAssets/...` 的研究结果接入编辑器验证。
@@ -88,6 +100,8 @@
 - 仓库根目录已补齐 `ProjectSettings/` 和 `Packages/`，但还未实测“从 Unity Hub 直接 Add/open 仓库根目录”是否能正常打开该工程。
 - 旧的 `My project/` 目录目前仍保留为回退缓存，其中主要剩 `Library/`、`Temp/`、`Logs/`、`UserSettings/`、IDE 工程文件以及空的 `Assets/`/`Packages/` 壳目录；待根目录工程验证通过后再清理。
 - 当前没有 Honey 模型源文件，所以 Unity 侧只能先完成工程/场景/材质占位验证，不能进入真实模型 UV 对照。
+- 若下载的是 `GLB` 而不是 `FBX`，Unity Inspector 里不一定有 `Model/Rig/Animation/Materials` 导入页签，容易误以为模型导入异常；这类情况下应先回查文件扩展名。
+- Meshy 导出的 biped 模型可能 Humanoid 骨架映射全绿，但自带 clip 仍是 `0 frames` 空动画；这不影响静态查看，但会阻塞动作变形验收。
 
 ### Decision
 - Use / Maybe / Reject: Use
@@ -108,6 +122,7 @@
 - `Assets/README.md`
 - `ProjectSettings/ProjectVersion.txt`
 - `Packages/manifest.json`
+- `Assets/Generated/Meshy/`
 
 ### Notes
 - 这份笔记会随着用户实际安装反馈继续追加，优先记录“点了什么、看到什么提示、为什么这么选、最后生成了哪些 Unity 工程文件”。
