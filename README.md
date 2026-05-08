@@ -1,5 +1,9 @@
 # Fighting Vipers Fan Remake (Prototype)
 
+运行dungurn keeper2:
+set "PATH=C:\Program Files\Eclipse Adoptium\jdk-25.0.3.9-hotspot\bin;%PATH%" && powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\dish\projects\NewFighingVipers\Tools\Windows\Run-OpenKeeper-DK2.ps1"
+
+
 ## 🎯 Project Goal
 This project is a **research-driven, non-commercial fan remake prototype** inspired by *Fighting Vipers*.
 
@@ -73,6 +77,7 @@ Use a **Windows PC** as the main machine for Unity, emulator tooling, controller
 - Hidden Palace
 - Models / Textures / Sounds Resource
 - Community extraction and conversion tools
+- OpenKeeper / Dungeon Keeper II reference run using the local Steam install
 
 ### AI Support Only
 AI should now be treated as a **secondary helper**, not the main art path. Use it when the original material is missing, unclear, or needs variation.
@@ -175,6 +180,17 @@ Used for:
 - Sound study
 - Fast prototype placeholders
 
+### Cross-Game Engine Reference
+Use [`tonihele/OpenKeeper`](https://github.com/tonihele/openkeeper) as a practical reference for how an open-source remake engine can read and convert original commercial game assets.
+
+Local target:
+- Original asset source: `C:\Program Files (x86)\Steam\steamapps\common\Dungeon Keeper 2`
+- Local checkout target: `Reference/OriginalAssets/OpenKeeper/`
+- Helper script: `Tools/Windows/Run-OpenKeeper-DK2.ps1`
+- Prerequisite: Java JDK 25 available on `PATH` (`java` and `javac`)
+
+This is not a gameplay-direction change from Fighting Vipers to Dungeon Keeper II. It is a reference milestone for validating a clean "owned original install -> open engine -> playable reference" workflow before applying similar discipline to Fighting Vipers research tooling.
+
 ### Extraction / Conversion Tools
 Candidates to test:
 - [`cyberwarriorx/vcdextract`](https://github.com/cyberwarriorx/vcdextract)
@@ -258,6 +274,7 @@ Current direction for the first playable slice:
 | Community research | [`SegaXtreme - Fighting Vipers`](https://segaxtreme.net/tags/fighting-vipers/) | Saturn patch, discovery, and discussion hub. | Useful for obscure findings, patches, and extraction clues. | **High priority**. Good practical research hub. |
 | Prototype archive | [`Hidden Palace - Fighting Vipers prototype`](https://hiddenpalace.org/Fighting_Vipers_(Jul_5,_1996_prototype)) | Preserved prototype build and notes. | Useful for cut content, version differences, and historical context. | **Medium priority**. Research value, not the main production path. |
 | Extraction pipeline | [`cyberwarriorx/vcdextract`](https://github.com/cyberwarriorx/vcdextract) / [`doyousketch2/SatRGB`](https://github.com/doyousketch2/SatRGB) | Saturn extraction tools for disc contents and image assets. | Practical starting point for turning owned original media into usable research files. | **High priority**. Core extraction path to test. |
+| Cross-game engine reference | [`tonihele/OpenKeeper`](https://github.com/tonihele/openkeeper) + local Steam `Dungeon Keeper 2` install | Java / jMonkeyEngine open-source Dungeon Keeper II remake that requires original DK2 assets. | Useful reference for an asset-dependent remake workflow: locate owned install, convert original assets, run a clean open engine, and document setup friction. | **Medium priority**. Validate with `Tools/Windows/Run-OpenKeeper-DK2.ps1`; keep checkout local-only. |
 | AI support | [`AIARTCHAN/openpose_editor`](https://huggingface.co/spaces/AIARTCHAN/openpose_editor) / [`tori29umai/Qwen-Image-2509-CharacterSheet`](https://huggingface.co/spaces/tori29umai/Qwen-Image-2509-CharacterSheet) / [`diffusers/stable-diffusion-xl-inpainting`](https://huggingface.co/spaces/diffusers/stable-diffusion-xl-inpainting) / [`frogleo/Image-to-3D`](https://huggingface.co/spaces/frogleo/Image-to-3D) | Pose, turnaround, localized paintover, and rough 3D support tools. | Helpful only after original sources are insufficient or need augmentation. | **Support tools**. No longer the main production path. |
 
 ---
