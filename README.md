@@ -250,6 +250,8 @@ Target: **Near €0 additional cost**
 Unity development still happens locally, but the Unity project itself is treated as a **non-synced working directory**.
 Git is used as a **technical knowledge and tooling repository**, not as the transport layer for Unity scenes, imported art, generated models, emulator dumps, or binary research assets.
 
+Local Unity login reminder: account alias `chong83gmail`.
+
 If this project later needs multi-machine Unity sync, switch to a separate policy first, then re-evaluate Git LFS or Perforce. Do not silently reintroduce large Unity/art binaries into normal Git history.
 
 ---
