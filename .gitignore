@@ -46,6 +46,7 @@ sysinfo.txt
 /Resources/ffmpeg-8.1-essentials_build/
 /Resources/noesisv/
 /Resources/ninjaripper/
+/Resources/neonlightingforece/
 
 # Local-only third-party model generation dependencies.
 /Tools/Generation/Hunyuan3D/cache/
