@@ -39,6 +39,8 @@
 - `Packages/`
 - `ProjectSettings/`
 
+`Resources/neonlightingforece/` 目前仅作为 Neon Lightning Force OpenBOR 包体、Melania sprite carve 和非 AI 放大实验记录，仍属于本地-only 研究资产。
+
 ### Tooling
 
 - `Tools/Extraction/Model2/`：Model 2 dump、抽帧、筛选、辅助分析脚本。
