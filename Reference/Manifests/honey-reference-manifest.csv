@@ -1,0 +1,7 @@
+source_id,character_state,view,source_type,source_url,local_logical_path,sha256,rights_status,allowed_use,decision,related_note,notes
+FV-HON-REF-001,normal,multi,public-saturn-model,https://models.spriters-resource.com/saturn/fightingvipers/,,,review-required,research-reference-only,candidate,Reference/ResearchNotes/2026-05-10-honey-frame-screenshot-assets.md,重新取得文件后登记精确页面与哈希
+FV-HON-REF-002,normal,multi,public-saturn-texture,https://textures.spriters-resource.com/saturn/fightingvipers/,,,review-required,research-reference-only,candidate,Reference/ResearchNotes/2026-05-10-honey-frame-screenshot-assets.md,重新取得文件后登记精确页面与哈希
+FV-HON-REF-003,normal,multi,model2-capture,,LocalData/Captures/Honey/,,restricted-local,research-reference-only,missing,Reference/ResearchNotes/2026-04-02-model2-honey-texture-pipeline-progress.md,历史本机素材当前不存在
+FV-HON-REF-004,normal,texture-set,model2-texture-dump,,LocalData/Raw/Model2/Honey/Honey_Master_TextureSet/,,restricted-local,structure-and-alpha-reference-only,missing,Reference/ResearchNotes/2026-04-02-model2-honey-texture-pipeline-progress.md,历史记录为Main39加P2变体4但当前不可验证
+FV-HON-REF-005,normal,multi,video-frame,,LocalData/Captures/Honey/FrameSamplesRaw/,,restricted-local,research-reference-only,missing,Reference/ResearchNotes/2026-05-10-honey-frame-screenshot-assets.md,历史抽帧当前不存在
+FV-HON-REF-006,normal,front,external-image,,LocalData/Raw/Honey/ExternalFrontReference/,,unknown,experiment-only,rejected-for-production,Reference/ResearchNotes/2026-04-06-meshy-single-front-reference-observation.md,原始URL和本地归档均缺失

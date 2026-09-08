@@ -140,6 +140,9 @@ Get-ChildItem 'C:\Windows\System32\xinput*.dll','C:\Windows\SysWOW64\xinput*.dll
 ### 当前建议
 - 以后如果是“所有项目都会复用的 Windows 命令规范”，补到本文件。
 - 如果是“Fighting Vipers / Model 2 这条研究线特有的坑和判断”，补到对应研究笔记，不要混进本文件。
+- 工具的当前状态、平台、输入输出和副作用以 `Tools/tool-manifest.csv` 为准。
+- Windows-only 提取输入和输出统一放在 `LocalData/`；不要恢复旧的 `Resources/` 作为正式目录。
+- Mac M4 是正式生产主环境，Windows 只承担定向提取和后续目标平台验证。完整职责见 `Docs/Development/SETUP.md`。
 
 ## 8. PNG / 图像批处理脚本
 

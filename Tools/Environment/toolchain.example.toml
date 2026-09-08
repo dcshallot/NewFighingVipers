@@ -1,0 +1,38 @@
+schema_version = 1
+
+[project]
+phase = "C0"
+primary_platform = "macos-arm64"
+unity_project = "Game"
+local_data = "LocalData"
+reference_manifest = "Reference/Manifests/honey-reference-manifest.csv"
+asset_manifest = "Reference/Manifests/honey-asset-manifest.csv"
+tool_manifest = "Tools/tool-manifest.csv"
+
+[required]
+python_min = "3.11"
+git_min = "2.30"
+git_lfs_min = "3.0"
+ffmpeg_min = "6.0"
+blender_version = "4.5"
+unity_version = "6000.4.1f1"
+unity_render_pipeline = "URP"
+
+[commands]
+git = "git"
+git_lfs = "git-lfs"
+ffmpeg = "ffmpeg"
+blender = "blender"
+unity = ""
+
+[optional_windows]
+powershell_min = "7.0"
+model2_emulator = ""
+noesis = ""
+ninja_ripper = ""
+
+[optional_hunyuan]
+required = false
+python = ""
+vendor = "Tools/Generation/Hunyuan3D/vendor"
+cache = "Tools/Generation/Hunyuan3D/cache"

@@ -1,68 +1,74 @@
-# Unity generated folders/files.
-/Assets/
-/Packages/
-/ProjectSettings/
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
-[Uu]ser[Ss]ettings/
-[Mm]emoryCaptures/
-[Rr]ecordings/
-__pycache__/
-*.pyc
-
-# Unity-generated IDE/project files.
+# OS and editor metadata
+.DS_Store
+Thumbs.db
 .vs/
 .vscode/
 .idea/
-*.csproj
-*.sln
-*.slnx
-*.unityproj
-*.booproj
-*.pidb
 *.user
 *.userprefs
 *.suo
-*.svd
-*.pdb
-*.mdb
+*.pidb
 *.opendb
 *.VC.db
-sysinfo.txt
 
-# Temporary nested Unity project created by Hub defaults.
-# Repo policy requires initializing the Unity project at repo root, not under `My project/`.
-/My project/
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
 
-/Resources/M2emulator/
-/Resources/VideoRefs/
-/Resources/ffmpeg-8.1/
-/Resources/ffmpeg/
-/Resources/ffmpeg-release-essentials.zip
-/Resources/ffmpeg-8.1-essentials_build/
-/Resources/noesisv/
-/Resources/ninjaripper/
-/Resources/neonlightingforece/
+# Local toolchain configuration (may contain absolute paths)
+/Tools/Environment/toolchain.local.toml
 
-# Local-only third-party model generation dependencies.
-/Tools/Generation/Hunyuan3D/cache/
-/Tools/Generation/Hunyuan3D/vendor/
+# Local-only restricted, generated, and third-party data.
+# Keep only the explanatory README tracked.
+/LocalData/*
+!/LocalData/README.md
 
-# Local-only generated model artifacts.
-/Assets/Generated/
-/Assets/Generated.meta
-
-# Local-only Honey capture / review intermediates.
+# Legacy local research locations retained as safety guards
+/Resources/
 /Reference/Captures/
 /Reference/OriginalAssets/
-/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_IncomingDump/
-/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_IncomingDumpAuto/
-/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_LocalScreenshots/
-/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_review/
-/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_review_*/
-/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_texcache_*.csv
-/Reference/OriginalAssets/Textures/FightingVipers/Honey/Honey_Master_TextureSet/_candidate_texcache_report.csv
+
+# Local-only third-party model generation dependencies
+/Tools/Generation/**/cache/
+/Tools/Generation/**/vendor/
+
+# DCC autosaves, caches, and temporary exports
+*.blend1
+*.blend2
+*.blend@
+*.autosave
+*.tmp
+*.temp
+/ArtSource/**/Autosave/
+/ArtSource/**/Cache/
+/ArtSource/**/Temp/
+/ArtSource/**/Generated/
+
+# Unity generated folders inside the canonical Game project
+/Game/[Ll]ibrary/
+/Game/[Tt]emp/
+/Game/[Oo]bj/
+/Game/[Bb]uild/
+/Game/[Bb]uilds/
+/Game/[Ll]ogs/
+/Game/[Uu]ser[Ss]ettings/
+/Game/[Mm]emoryCaptures/
+/Game/[Rr]ecordings/
+/Game/*.csproj
+/Game/*.sln
+/Game/*.slnx
+/Game/*.unityproj
+/Game/*.booproj
+/Game/sysinfo.txt
+
+# Legacy accidental root-level Unity project guard
+/Assets/
+/Packages/
+/ProjectSettings/
+/UserSettings/
+/My project/
+
+# Generated review outputs not explicitly promoted to a milestone
+/ReviewTemp/
