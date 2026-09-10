@@ -32,11 +32,10 @@ Suggested setup:
 """
 
 
-LOCAL_CACHE_ROOT = Path(__file__).resolve().parent / "cache"
+REPO_ROOT = Path(__file__).resolve().parents[3]
+LOCAL_CACHE_ROOT = REPO_ROOT / "LocalData/Cache/Hunyuan3D"
 os.environ.setdefault("HF_HOME", str(LOCAL_CACHE_ROOT / "huggingface"))
 os.environ.setdefault("U2NET_HOME", str(LOCAL_CACHE_ROOT / "u2net"))
-(LOCAL_CACHE_ROOT / "huggingface").mkdir(parents=True, exist_ok=True)
-(LOCAL_CACHE_ROOT / "u2net").mkdir(parents=True, exist_ok=True)
 
 
 try:
@@ -60,13 +59,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--input-dir",
         type=Path,
-        default=Path("Reference/Captures/Honey/TurnaroundSplit"),
+        default=Path("LocalData/Incoming/Honey/TurnaroundSplit"),
         help="Directory containing front/back plus left or side, and optionally right.",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("Assets/Generated/Hunyuan3D/Honey"),
+        default=Path("LocalData/Generated/Hunyuan3D/Honey"),
         help="Directory for generated GLB and preprocessed views.",
     )
     parser.add_argument("--front-name", default="front.png")
@@ -149,15 +148,20 @@ def parse_args() -> argparse.Namespace:
 
 
 def resolve_existing_path(path_value: Path) -> Path:
-    path = path_value if path_value.is_absolute() else (Path.cwd() / path_value)
+    path = path_value if path_value.is_absolute() else (REPO_ROOT / path_value)
     if not path.exists():
         raise FileNotFoundError(f"Path not found: {path}")
     return path.resolve()
 
 
 def resolve_output_dir(path_value: Path) -> Path:
-    path = path_value if path_value.is_absolute() else (Path.cwd() / path_value)
-    path.mkdir(parents=True, exist_ok=True)
+    path = path_value if path_value.is_absolute() else (REPO_ROOT / path_value)
+    full_path = path.resolve()
+    local_root = (REPO_ROOT / "LocalData").resolve()
+    if full_path != local_root and local_root not in full_path.parents:
+        raise ValueError(f"Output must stay under LocalData: {full_path}")
+    full_path.mkdir(parents=True, exist_ok=True)
+    path = full_path
     return path.resolve()
 
 
@@ -546,6 +550,8 @@ def write_manifest(
 
 def main() -> int:
     args = parse_args()
+    (LOCAL_CACHE_ROOT / "huggingface").mkdir(parents=True, exist_ok=True)
+    (LOCAL_CACHE_ROOT / "u2net").mkdir(parents=True, exist_ok=True)
     output_dir = resolve_output_dir(args.output_dir)
 
     views = load_normalized_views(args)

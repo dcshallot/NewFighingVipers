@@ -276,12 +276,17 @@ function New-LegendSheet {
 
 $repoRoot = Get-RepoRoot
 if ([string]::IsNullOrWhiteSpace($TextureSetDir)) {
-    $TextureSetDir = Join-Path $repoRoot "Reference\OriginalAssets\Textures\FightingVipers\Honey\Honey_Master_TextureSet"
+    $TextureSetDir = Join-Path $repoRoot "LocalData\Raw\Model2\Honey\Honey_Master_TextureSet"
 }
 
 $textureSetPath = (Resolve-Path -LiteralPath $TextureSetDir).Path
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "LocalData")).TrimEnd([char[]]@('\', '/'))
+$localDataPrefix = $localDataRoot + [System.IO.Path]::DirectorySeparatorChar
+if (-not $textureSetPath.StartsWith($localDataPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "TextureSetDir must stay under LocalData: $textureSetPath"
+}
 if ([string]::IsNullOrWhiteSpace($OutputDir)) {
-    $OutputDir = Join-Path $textureSetPath "_LocalScreenshots\FalseColorUvCheck_v1"
+    $OutputDir = Join-Path $textureSetPath "_Generated\FalseColorUvCheck_v1"
 }
 $outputPath = [System.IO.Path]::GetFullPath($OutputDir)
 Assert-ChildPath -ParentPath $textureSetPath -ChildPath $outputPath

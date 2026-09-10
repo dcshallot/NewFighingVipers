@@ -25,12 +25,14 @@
 ### 推荐模板
 ```powershell
 $ErrorActionPreference = 'Stop'
-$workspaceRoot = [System.IO.Path]::GetFullPath('C:\Users\dish\projects\NewFighingVipers\')
-$target = 'C:\Users\dish\projects\NewFighingVipers\Resources\M2emulator\TEXCACHE'
+$workspaceRoot = [System.IO.Path]::GetFullPath((Get-Location).Path).TrimEnd([char[]]@('\', '/'))
+$workspacePrefix = $workspaceRoot + [System.IO.Path]::DirectorySeparatorChar
+$target = Join-Path $workspaceRoot 'LocalData\ThirdParty\Model2Emulator\TEXCACHE'
 
 $resolved = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $target).Path)
-if (-not $resolved.StartsWith($workspaceRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw "Refusing to operate outside workspace: $resolved"
+$isDescendant = $resolved.StartsWith($workspacePrefix, [System.StringComparison]::OrdinalIgnoreCase)
+if (-not $isDescendant) {
+    throw "Refusing to operate outside workspace or at its root: $resolved"
 }
 
 Get-ChildItem -LiteralPath $resolved -Force | Remove-Item -Recurse -Force
@@ -142,7 +144,7 @@ Get-ChildItem 'C:\Windows\System32\xinput*.dll','C:\Windows\SysWOW64\xinput*.dll
 - 如果是“Fighting Vipers / Model 2 这条研究线特有的坑和判断”，补到对应研究笔记，不要混进本文件。
 - 工具的当前状态、平台、输入输出和副作用以 `Tools/tool-manifest.csv` 为准。
 - Windows-only 提取输入和输出统一放在 `LocalData/`；不要恢复旧的 `Resources/` 作为正式目录。
-- Mac M4 是正式生产主环境，Windows 只承担定向提取和后续目标平台验证。完整职责见 `Docs/Development/SETUP.md`。
+- 当前仓库默认是三平台 `archive`；本文件中的可执行工具属于 Windows-only `windows-extraction`。完整职责见 `Docs/Development/REPRODUCIBILITY.md`。
 
 ## 8. PNG / 图像批处理脚本
 

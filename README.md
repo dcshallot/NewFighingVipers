@@ -1,81 +1,45 @@
-# New Fighting Vipers
+# New Fighting Vipers Research Archive
 
-以 **Honey 正常状态高清重建**为当前目标的 Fighting Vipers 研究与制作仓库。项目先完成方向 C 的可维护角色资产；通过 C6 验收后，才进入方向 B 的 1v1 战斗原型。
+Fighting Vipers / Honey 的研究、工具与技术验证归档。当前没有活跃制作工程；2026-09 Mac M4 Blender 自动化测试已结束。
 
-> 本项目不包含 ROM、模拟器、原作二进制资产或其他受限素材。使用者必须自行确认所用参考和资产的权利边界。
+## 当前事实
 
-## 当前状态
+- 当前状态：归档；唯一事实页为 [`Docs/PROJECT_STATUS.md`](Docs/PROJECT_STATUS.md)。
+- Mac 测试报告：[`Docs/MAC_BLENDER_HONEY_AUTOMATION_TEST.md`](Docs/MAC_BLENDER_HONEY_AUTOMATION_TEST.md)。
+- 保留模型：`ArtSource/Characters/Honey/Blockout/Honey_ClothingBlockout_v005.blend`，不是 game-ready 成品。
+- 历史 ResearchNotes 和 Model 2/Hunyuan/Windows 工具保留。
+- Unity 测试工程、受限原始素材和中间物不在仓库中。
 
-- 当前阶段：**C0 — 制作基线整理中**
-- 当前角色：Honey 正常状态
-- 主开发机：Apple Silicon Mac（Mac M4）
-- 辅助平台：Windows，仅用于 Model 2 等定向提取和后续目标平台验证
-- 角色主流程：Blender 手工／半手工建模、人工拓扑、UV、绑定和权重
-- 游戏验证：Unity 6 + URP，工程预留在 `Game/`
-- 方向 B：**未准入**
+本次 No-Go 只针对 Mac M4 + Blender 5.2.1 + MPFB 2.0.17 + 通用 LLM/脚本的低人工介入测试，不否定其他 AI 3D、平台或未来重启。
 
-当前 checkout 仍不包含可打开的 Unity 工程、Honey 可投产模型或历史本地采集文件。Unity `6000.4.1f1 + HDRP` 只是一段历史实验记录；新的正式基线采用 URP。
+## 跨平台审计
 
-详见 [`Docs/PROJECT_STATUS.md`](Docs/PROJECT_STATUS.md)。
+```bash
+python3 Tools/Environment/bootstrap.py
+python3 Tools/Environment/check_environment.py --profile archive
+python3 Tools/Environment/check_environment.py --profile archive --json
+```
 
-## 快速导航
+`archive` 支持 macOS、Windows、Linux/CI，不要求 Blender、MPFB、Unity、CUDA 或游戏数据。其他 profiles 见 [`Docs/Development/REPRODUCIBILITY.md`](Docs/Development/REPRODUCIBILITY.md)。
+
+## 导航
 
 | 内容 | 入口 |
 | --- | --- |
-| 当前事实与风险 | [`Docs/PROJECT_STATUS.md`](Docs/PROJECT_STATUS.md) |
-| C0～C6 路线与 C→B Gate | [`Docs/ROADMAP.md`](Docs/ROADMAP.md) |
-| 正式技术决策 | [`Docs/DECISIONS.md`](Docs/DECISIONS.md) |
-| 开发环境 | [`Docs/Development/SETUP.md`](Docs/Development/SETUP.md) |
-| 资产生产流程 | [`Docs/Development/ASSET_PIPELINE.md`](Docs/Development/ASSET_PIPELINE.md) |
-| 美术资产管理 | [`Docs/Development/ART_ASSET_MANAGEMENT.md`](Docs/Development/ART_ASSET_MANAGEMENT.md) |
-| 版本控制 | [`Docs/Development/VERSION_CONTROL.md`](Docs/Development/VERSION_CONTROL.md) |
-| Honey 角色规格 | [`Docs/Production/Honey/CHARACTER_BIBLE.md`](Docs/Production/Honey/CHARACTER_BIBLE.md) |
-| Honey 技术规格 | [`Docs/Production/Honey/ASSET_SPEC.md`](Docs/Production/Honey/ASSET_SPEC.md) |
-| Honey 验收表 | [`Docs/Production/Honey/QA_CHECKLIST.md`](Docs/Production/Honey/QA_CHECKLIST.md) |
-| 历史研究 | [`Reference/ResearchNotes/`](Reference/ResearchNotes/) |
-| 工具分类 | [`Tools/README.md`](Tools/README.md) |
+| 当前状态与支持矩阵 | [`Docs/PROJECT_STATUS.md`](Docs/PROJECT_STATUS.md) |
+| 决策历史 | [`Docs/DECISIONS.md`](Docs/DECISIONS.md) |
+| 可复现环境 | [`Docs/Development/REPRODUCIBILITY.md`](Docs/Development/REPRODUCIBILITY.md) |
+| 仓库与数据策略 | [`Docs/Development/REPOSITORY_AND_DATA_POLICY.md`](Docs/Development/REPOSITORY_AND_DATA_POLICY.md) |
+| 未来资产 Gate | [`Docs/Development/ASSET_PIPELINE.md`](Docs/Development/ASSET_PIPELINE.md) |
+| Reference 总入口 | [`Reference/README.md`](Reference/README.md) |
+| Manifest schema | [`Reference/Manifests/README.md`](Reference/Manifests/README.md) |
+| 工具入口 | [`Tools/README.md`](Tools/README.md) |
+| 第三方说明 | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) |
 
-## 目录职责
+## 外部数据
 
-```text
-Docs/                  当前有效的方案、决策、规格与验收标准
-Reference/ResearchNotes/ 历史实验、来源调查和失败证据
-Reference/Manifests/   参考资料与正式资产的元数据
-ArtSource/             可发布的原创美术工作源文件（大型文件使用 LFS）
-LocalData/             ROM、dump、原作参考、AI 中间物等本地内容
-Game/                  Unity URP 验证工程及未来方向 B 工程
-Tools/                 自写工具、工具清单和环境检查
-```
+原始视频、截图、ROM、dump 和第三方包不进入 Git。通过 `storage_key + relative_path + size + SHA-256` 记录；在本机 `toolchain.local.toml` 配置 `external_source_root` 后由 archive doctor 校验。
 
-历史笔记不会因为结论过时而被删除；**当前决策以 `Docs/` 为准**。
+## 版本状态
 
-## 当前生产原则
-
-1. 先完成 Honey 正常状态，不做破甲版和完整阵容。
-2. 参考优先级为可追溯原始资料、公开 Saturn 资源、Model 2 截图与视频；AI 输出不能替代证据。
-3. AI 只用于概念辅助、局部修图、粗略体块、脚本和视觉 QA，不直接产出最终角色。
-4. `.blend`、拓扑、UV、骨架和权重必须可人工维护。
-5. C6 前，`Game/` 仅用于比例、材质、动画和性能验证，不扩展完整战斗系统。
-6. ROM、模拟器 dump、第三方包、来源不明素材和批量生成物不得进入 Git 或 Git LFS。
-
-## 已验证的历史结论
-
-- Model 2 texture cache dump 对贴图归属研究有价值，但灰度 PNG 不是最终 albedo。
-- Ninja Ripper 网格只适合作局部轮廓和贴图归属参考。
-- Honey 的 Hunyuan3D 四视图／双视图结果没有达到可修门槛，已拒绝作为生产路线。
-- Meshy/Mixamo 可帮助快速验证，但不能解决 Honey 的裙摆、双马尾、袖口、拓扑和权重问题。
-- 历史 Unity 场景和本地生成模型未包含在当前仓库中。
-
-证据索引见 [`Reference/ResearchNotes/2026-05-10-honey-frame-screenshot-assets.md`](Reference/ResearchNotes/2026-05-10-honey-frame-screenshot-assets.md)。
-
-## 开始工作
-
-1. 阅读 [`Docs/Development/SETUP.md`](Docs/Development/SETUP.md)。
-2. 复制 `Tools/Environment/toolchain.example.toml` 为本地 `toolchain.local.toml`。
-3. 运行 `python3 Tools/Environment/check_environment.py`。
-4. 在添加参考或资产前更新 `Reference/Manifests/` 中对应清单。
-5. 按 [`Docs/ROADMAP.md`](Docs/ROADMAP.md) 的当前里程碑工作，不跨 Gate。
-
-## 方向 B 准入
-
-只有 Honey 通过 C6，并满足可维护源模型、稳定导出、来源闭环、固定动作变形、视觉和性能验收后，方向 B 才能启动。完整条件见 [`Docs/ROADMAP.md`](Docs/ROADMAP.md#方向-c-到方向-b-的-gate)。
+当前工作区尚未 commit/push，v005 仅匹配 Git LFS 规则，尚未形成远端恢复闭环。未经用户明确授权，本仓库不会自动提交或操作远端。

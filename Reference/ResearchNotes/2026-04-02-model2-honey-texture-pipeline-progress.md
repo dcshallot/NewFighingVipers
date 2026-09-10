@@ -1,3 +1,5 @@
+> **Archived research record.** Paths and statuses below describe the original experiment and may no longer exist. Current facts: [`../../Docs/PROJECT_STATUS.md`](../../Docs/PROJECT_STATUS.md).
+
 ## Model 2 / Honey Texture Pipeline Progress
 
 ### Meta

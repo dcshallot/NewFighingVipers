@@ -1,9 +1,9 @@
 param(
     [Parameter(Mandatory = $false)]
-    [string]$VideoDir = "Resources\VideoRefs",
+    [string]$VideoDir = "LocalData\Raw\VideoRefs",
 
     [Parameter(Mandatory = $false)]
-    [string]$OutputRoot = "Reference\Captures\Honey\FrameSamplesRaw",
+    [string]$OutputRoot = "LocalData\Captures\Honey\FrameSamplesRaw",
 
     [Parameter(Mandatory = $false)]
     [int]$IntervalSeconds = 3,
@@ -13,39 +13,53 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\.."))
 
-function Resolve-RepoPath {
-    param([string]$PathValue)
+function Resolve-WorkspacePath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$PathValue,
 
-    if ([System.IO.Path]::IsPathRooted($PathValue)) {
-        return (Resolve-Path -LiteralPath $PathValue).Path
+        [switch]$MustExist
+    )
+
+    $candidate = if ([System.IO.Path]::IsPathRooted($PathValue)) {
+        $PathValue
+    }
+    else {
+        Join-Path $repoRoot $PathValue
     }
 
-    return (Resolve-Path -LiteralPath (Join-Path (Get-Location).Path $PathValue)).Path
+    $fullPath = [System.IO.Path]::GetFullPath($candidate)
+    $fullRoot = [System.IO.Path]::GetFullPath($repoRoot).TrimEnd([char[]]@('\', '/'))
+    $rootPrefix = $fullRoot + [System.IO.Path]::DirectorySeparatorChar
+    $isRoot = $fullPath.Equals($fullRoot, [System.StringComparison]::OrdinalIgnoreCase)
+    $isDescendant = $fullPath.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)
+    if (-not $isRoot -and -not $isDescendant) {
+        throw "Refusing to operate outside workspace: $fullPath"
+    }
+
+    if ($MustExist -and -not (Test-Path -LiteralPath $fullPath)) {
+        throw "Path not found: $fullPath"
+    }
+
+    return $fullPath
 }
 
 function Resolve-FfmpegExe {
     param([string]$PreferredPath)
 
     if (-not [string]::IsNullOrWhiteSpace($PreferredPath)) {
-        if ([System.IO.Path]::IsPathRooted($PreferredPath) -and (Test-Path -LiteralPath $PreferredPath)) {
-            return (Resolve-Path -LiteralPath $PreferredPath).Path
+        $candidate = if ([System.IO.Path]::IsPathRooted($PreferredPath)) {
+            $PreferredPath
         }
-
-        $candidate = Join-Path (Get-Location).Path $PreferredPath
-        if (Test-Path -LiteralPath $candidate) {
+        else {
+            Join-Path $repoRoot $PreferredPath
+        }
+        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
             return (Resolve-Path -LiteralPath $candidate).Path
         }
-    }
-
-    $repoCandidates = @(
-        (Join-Path (Get-Location).Path "Resources\ffmpeg\bin\ffmpeg.exe"),
-        (Join-Path (Get-Location).Path "Resources\ffmpeg-8.1-essentials_build\bin\ffmpeg.exe")
-    )
-    foreach ($repoCandidate in $repoCandidates) {
-        if (Test-Path -LiteralPath $repoCandidate) {
-            return (Resolve-Path -LiteralPath $repoCandidate).Path
-        }
+        throw "Configured ffmpeg executable not found."
     }
 
     $pathCommand = Get-Command ffmpeg -ErrorAction SilentlyContinue
@@ -53,15 +67,20 @@ function Resolve-FfmpegExe {
         return $pathCommand.Source
     }
 
-    throw "ffmpeg.exe not found. Put ffmpeg at Resources\ffmpeg\bin\ffmpeg.exe or pass -FfmpegPath explicitly."
+    throw "ffmpeg not found on PATH. Install it or pass -FfmpegPath explicitly."
 }
 
 if ($IntervalSeconds -le 0) {
     throw "IntervalSeconds must be > 0"
 }
 
-$videoDirPath = Resolve-RepoPath -PathValue $VideoDir
-$outputRootPath = Join-Path (Get-Location).Path $OutputRoot
+$videoDirPath = Resolve-WorkspacePath -PathValue $VideoDir -MustExist
+$outputRootPath = Resolve-WorkspacePath -PathValue $OutputRoot
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "LocalData")).TrimEnd([char[]]@('\', '/'))
+$localDataPrefix = $localDataRoot + [System.IO.Path]::DirectorySeparatorChar
+if (-not $outputRootPath.StartsWith($localDataPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "OutputRoot must stay under LocalData: $outputRootPath"
+}
 if (-not (Test-Path -LiteralPath $outputRootPath)) {
     [void](New-Item -ItemType Directory -Path $outputRootPath -Force)
 }

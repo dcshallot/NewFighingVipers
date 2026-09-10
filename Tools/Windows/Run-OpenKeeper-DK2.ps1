@@ -1,6 +1,6 @@
 param(
-    [string]$Dk2Path = 'C:\Program Files (x86)\Steam\steamapps\common\Dungeon Keeper 2',
-    [string]$OpenKeeperDir = (Join-Path (Resolve-Path -LiteralPath "$PSScriptRoot\..\..").Path 'Reference\OriginalAssets\OpenKeeper'),
+    [string]$Dk2Path = $env:DK2_PATH,
+    [string]$OpenKeeperDir = (Join-Path (Resolve-Path -LiteralPath "$PSScriptRoot\..\..").Path 'LocalData\ThirdParty\OpenKeeper'),
     [switch]$NoClone,
     [switch]$NoRun
 )
@@ -26,6 +26,10 @@ function Get-JavaMajorVersion {
     }
 
     return $null
+}
+
+if ([string]::IsNullOrWhiteSpace($Dk2Path)) {
+    throw "Specify -Dk2Path or set the DK2_PATH environment variable."
 }
 
 $dk2FullPath = [System.IO.Path]::GetFullPath($Dk2Path)

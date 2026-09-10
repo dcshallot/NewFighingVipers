@@ -1,19 +1,23 @@
 param(
     [Parameter(Mandatory = $false)]
-    [string]$InputRoot = "Reference\Captures\Honey\FrameSamplesRaw",
+    [string]$InputRoot = "LocalData\Captures\Honey\FrameSamplesRaw",
 
     [Parameter(Mandatory = $false)]
-    [string]$OutputRoot = "Reference\Captures\Honey\FrameSamplesCropped",
+    [string]$OutputRoot = "LocalData\Generated\Honey\FrameSamplesCropped",
 
     [Parameter(Mandatory = $false)]
-    [string]$CropConfigPath = "Tools\Extraction\Model2\HoneyVideoFrameCropConfig.json",
+    [string]$CropConfigPath = "LocalData\Config\HoneyVideoFrameCropConfig.json",
 
     [Parameter(Mandatory = $false)]
-    [switch]$GenerateMissingConfigOnly
+    [switch]$GenerateMissingConfigOnly,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$WriteConfig
 )
 
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\.."))
 
 function Resolve-OrCreateRepoPath {
     param([string]$PathValue)
@@ -22,7 +26,7 @@ function Resolve-OrCreateRepoPath {
         return [System.IO.Path]::GetFullPath($PathValue)
     }
 
-    return [System.IO.Path]::GetFullPath((Join-Path (Get-Location).Path $PathValue))
+    return [System.IO.Path]::GetFullPath((Join-Path $repoRoot $PathValue))
 }
 
 function Clamp-NormalizedRect {
@@ -87,7 +91,7 @@ function Load-CropConfigMap {
         }
     }
 
-    if ($changed -or -not (Test-Path -LiteralPath $ConfigPath)) {
+    if ($WriteConfig -and ($changed -or -not (Test-Path -LiteralPath $ConfigPath))) {
         $configDir = [System.IO.Path]::GetDirectoryName($ConfigPath)
         if (-not [string]::IsNullOrWhiteSpace($configDir) -and -not (Test-Path -LiteralPath $configDir)) {
             [void](New-Item -ItemType Directory -Path $configDir -Force)
@@ -108,11 +112,19 @@ if (-not (Test-Path -LiteralPath $inputRootPath)) {
 }
 
 $outputRootPath = Resolve-OrCreateRepoPath -PathValue $OutputRoot
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "LocalData")).TrimEnd([char[]]@('\', '/'))
+$localDataPrefix = $localDataRoot + [System.IO.Path]::DirectorySeparatorChar
+if (-not $outputRootPath.StartsWith($localDataPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "OutputRoot must stay under LocalData: $outputRootPath"
+}
 if (-not (Test-Path -LiteralPath $outputRootPath)) {
     [void](New-Item -ItemType Directory -Path $outputRootPath -Force)
 }
 
 $cropConfigFullPath = Resolve-OrCreateRepoPath -PathValue $CropConfigPath
+if ($WriteConfig -and -not $cropConfigFullPath.StartsWith($localDataPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Writable CropConfigPath must stay under LocalData: $cropConfigFullPath"
+}
 
 $videoDirs = Get-ChildItem -LiteralPath $inputRootPath -Directory | Sort-Object Name
 if ($videoDirs.Count -eq 0) {

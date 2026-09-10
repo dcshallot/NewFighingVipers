@@ -1,9 +1,9 @@
 param(
     [Parameter(Mandatory = $false)]
-    [string]$InputDir = "Reference\Captures\Honey\TurnaroundSplit",
+    [string]$InputDir = "LocalData\Incoming\Honey\TurnaroundSplit",
 
     [Parameter(Mandatory = $false)]
-    [string]$OutputDir = "Assets\Generated\Hunyuan3D\Honey",
+    [string]$OutputDir = "LocalData\Generated\Hunyuan3D\Honey",
 
     [Parameter(Mandatory = $false)]
     [string]$LeftName = "",
@@ -129,6 +129,11 @@ $repoRoot = Resolve-RepoRoot
 $scriptPath = Join-Path $PSScriptRoot "GenerateHoneyMvGlb.py"
 $inputDirFullPath = Resolve-RepoPath -PathValue $InputDir -RepoRoot $repoRoot
 $outputDirFullPath = Resolve-RepoPath -PathValue $OutputDir -RepoRoot $repoRoot
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "LocalData")).TrimEnd([char[]]@('\', '/'))
+$localDataPrefix = $localDataRoot + [System.IO.Path]::DirectorySeparatorChar
+if (-not $outputDirFullPath.StartsWith($localDataPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "OutputDir must stay under LocalData: $outputDirFullPath"
+}
 $textureInputModeArg = switch ($TextureInputMode) {
     "Front" { "front" }
     "FrontLeftBack" { "front-left-back" }

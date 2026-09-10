@@ -3,7 +3,10 @@ param(
     [string]$RipFrameDir,
 
     [Parameter(Mandatory = $false)]
-    [string]$HoneyTextureRoot = "Reference\OriginalAssets\Textures\FightingVipers\Honey\Honey_Master_TextureSet",
+    [string]$HoneyTextureRoot = "LocalData\Raw\Model2\Honey\Honey_Master_TextureSet",
+
+    [Parameter(Mandatory = $false)]
+    [string]$OutputDir = "LocalData\Generated\Model2\NinjaRipperMatches",
 
     [Parameter(Mandatory = $false)]
     [int]$SampleSize = 16,
@@ -17,6 +20,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\.."))
 
 function Resolve-RepoPath {
     param([string]$PathValue)
@@ -25,7 +29,7 @@ function Resolve-RepoPath {
         return (Resolve-Path -LiteralPath $PathValue).Path
     }
 
-    return (Resolve-Path -LiteralPath (Join-Path (Get-Location).Path $PathValue)).Path
+    return (Resolve-Path -LiteralPath (Join-Path $repoRoot $PathValue)).Path
 }
 
 function Read-CString {
@@ -393,6 +397,10 @@ function Parse-RipMeshInfo {
 
 $ripFrameDirPath = Resolve-RepoPath -PathValue $RipFrameDir
 $honeyRootPath = Resolve-RepoPath -PathValue $HoneyTextureRoot
+$outputDirPath = if ([System.IO.Path]::IsPathRooted($OutputDir)) { [System.IO.Path]::GetFullPath($OutputDir) } else { [System.IO.Path]::GetFullPath((Join-Path $repoRoot $OutputDir)) }
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "LocalData")).TrimEnd([char[]]@('\', '/'))
+if (-not $outputDirPath.StartsWith($localDataRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) { throw "OutputDir must stay under LocalData" }
+[void](New-Item -ItemType Directory -Path $outputDirPath -Force)
 
 $referenceProfiles = New-Object System.Collections.Generic.List[object]
 foreach ($categoryName in @("Main", "ColorAlt_P2")) {
@@ -428,7 +436,7 @@ foreach ($ddsFile in Get-ChildItem -LiteralPath $ripFrameDirPath -File -Filter "
     }
 }
 
-$textureMatchCsv = Join-Path $ripFrameDirPath "_texture_honey_match_candidates.csv"
+$textureMatchCsv = Join-Path $outputDirPath "_texture_honey_match_candidates.csv"
 $textureMatchRows |
     Sort-Object -Property @{ Expression = 'Correlation'; Descending = $true }, @{ Expression = 'Rmse'; Descending = $false } |
     Export-Csv -LiteralPath $textureMatchCsv -NoTypeInformation -Encoding UTF8
@@ -485,7 +493,7 @@ foreach ($ripFile in Get-ChildItem -LiteralPath $ripFrameDirPath -File -Filter "
     })
 }
 
-$meshMatchCsv = Join-Path $ripFrameDirPath "_mesh_honey_match_candidates.csv"
+$meshMatchCsv = Join-Path $outputDirPath "_mesh_honey_match_candidates.csv"
 $meshRows |
     Sort-Object -Property @{ Expression = 'IsLikelyHoneyTexture'; Descending = $true }, @{ Expression = 'Correlation'; Descending = $true }, @{ Expression = 'NumFaces'; Descending = $true } |
     Export-Csv -LiteralPath $meshMatchCsv -NoTypeInformation -Encoding UTF8

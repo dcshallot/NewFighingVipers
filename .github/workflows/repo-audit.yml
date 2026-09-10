@@ -1,0 +1,42 @@
+name: Repository Audit
+
+on:
+    push:
+    pull_request:
+
+jobs:
+    archive-audit:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
+            - name: Compile Python tools
+              run: python -m compileall -q Tools
+            - name: Audit archive
+              run: python Tools/Environment/check_environment.py --profile archive --json
+
+    powershell-parse:
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
+            - name: Audit archive
+              run: python Tools/Environment/check_environment.py --profile archive --json
+            - name: Parse PowerShell scripts
+              shell: pwsh
+              run: |
+                  $failed = $false
+                  Get-ChildItem Tools -Recurse -Filter *.ps1 | ForEach-Object {
+                      $tokens = $null
+                      $errors = $null
+                      [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$errors) | Out-Null
+                      if ($errors.Count -gt 0) {
+                          $failed = $true
+                          Write-Error "$($_.FullName): $($errors -join '; ')"
+                      }
+                  }
+                  if ($failed) { exit 1 }

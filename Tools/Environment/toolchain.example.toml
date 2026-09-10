@@ -1,38 +1,52 @@
-schema_version = 1
+schema_version = 2
+default_profile = "archive"
 
 [project]
-phase = "C0"
-primary_platform = "macos-arm64"
+status = "archived-mac-blender-test"
+local_data_root = "LocalData"
 unity_project = "Game"
-local_data = "LocalData"
 reference_manifest = "Reference/Manifests/honey-reference-manifest.csv"
+intake_manifest = "Reference/Manifests/honey-intake-2026-09-09.csv"
+selected_views_manifest = "Reference/Manifests/honey-p1-selected-views.csv"
 asset_manifest = "Reference/Manifests/honey-asset-manifest.csv"
 tool_manifest = "Tools/tool-manifest.csv"
 
-[required]
+[storage]
+# Machine-local path containing externally retained source files. Leave empty on archive-only machines.
+external_source_root = ""
+external_source_key = "vf-assets-input"
+
+[versions]
 python_min = "3.11"
 git_min = "2.30"
 git_lfs_min = "3.0"
 ffmpeg_min = "6.0"
-blender_version = "4.5"
-unity_version = "6000.4.1f1"
+powershell_min = "7.0"
+blender_exact = "5.2.1"
+mpfb_exact = "2.0.17"
+unity_exact = "6000.6.0f1"
 unity_render_pipeline = "URP"
+unity_render_pipeline_exact = "17.6.0"
 
 [commands]
 git = "git"
 git_lfs = "git-lfs"
 ffmpeg = "ffmpeg"
-blender = "blender"
+powershell = "pwsh"
+blender = ""
 unity = ""
 
-[optional_windows]
-powershell_min = "7.0"
+[blender]
+mpfb_module = "bl_ext.user_default.mpfb"
+mpfb_manifest = ""
+
+[windows_extraction]
 model2_emulator = ""
 noesis = ""
 ninja_ripper = ""
 
-[optional_hunyuan]
-required = false
+[hunyuan_historical]
+reproducible = false
 python = ""
 vendor = "Tools/Generation/Hunyuan3D/vendor"
-cache = "Tools/Generation/Hunyuan3D/cache"
+cache = "LocalData/Cache/Hunyuan3D"

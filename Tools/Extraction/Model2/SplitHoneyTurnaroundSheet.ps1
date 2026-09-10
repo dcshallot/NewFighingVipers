@@ -1,9 +1,9 @@
 param(
     [Parameter(Mandatory = $false)]
-    [string]$InputImagePath = "Reference\Captures\Honey\TurnaroundRaw\honey_turnaround.png",
+    [string]$InputImagePath = "LocalData\Incoming\Honey\TurnaroundRaw\honey_turnaround.png",
 
     [Parameter(Mandatory = $false)]
-    [string]$OutputDir = "Reference\Captures\Honey\TurnaroundSplit",
+    [string]$OutputDir = "LocalData\Generated\Honey\TurnaroundSplit",
 
     [Parameter(Mandatory = $false)]
     [int]$ForegroundMinChannelThreshold = 225,
@@ -26,6 +26,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\.."))
 
 function Resolve-RepoPath {
     param([string]$PathValue)
@@ -34,7 +35,7 @@ function Resolve-RepoPath {
         return (Resolve-Path -LiteralPath $PathValue).Path
     }
 
-    return (Resolve-Path -LiteralPath (Join-Path (Get-Location).Path $PathValue)).Path
+    return (Resolve-Path -LiteralPath (Join-Path $repoRoot $PathValue)).Path
 }
 
 function Test-ForegroundPixel {
@@ -48,7 +49,12 @@ function Test-ForegroundPixel {
 }
 
 $inputImageFullPath = Resolve-RepoPath -PathValue $InputImagePath
-$outputDirFullPath = [System.IO.Path]::GetFullPath((Join-Path (Get-Location).Path $OutputDir))
+$outputDirFullPath = if ([System.IO.Path]::IsPathRooted($OutputDir)) { [System.IO.Path]::GetFullPath($OutputDir) } else { [System.IO.Path]::GetFullPath((Join-Path $repoRoot $OutputDir)) }
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "LocalData")).TrimEnd([char[]]@('\', '/'))
+$localDataPrefix = $localDataRoot + [System.IO.Path]::DirectorySeparatorChar
+if (-not $outputDirFullPath.StartsWith($localDataPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "OutputDir must stay under LocalData: $outputDirFullPath"
+}
 if (-not (Test-Path -LiteralPath $outputDirFullPath)) {
     [void](New-Item -ItemType Directory -Path $outputDirFullPath -Force)
 }

@@ -1,31 +1,7 @@
-# Game
+# Game — Archived Test Workspace
 
-此目录预留给独立的 Unity 6 URP 工程。
+此目录曾用于 2026-09-08 至 2026-09-09 的 Mac Blender 自动化测试，初始化过 Unity `6000.6.0f1` + URP `17.6.0` 空白验证工程。
 
-## C6 前允许范围
+本次测试没有产生 Honey 游戏就绪模型、材质、Avatar、Animator 或玩法代码。为节省工作区空间，Unity `Assets/`、`Packages/`、`ProjectSettings/`、`Library/`、日志和 IDE 文件均已删除。
 
-- Honey 模型、材质、Avatar 和 Animator 导入；
-- 固定灯光、相机和角色验证场景；
-- idle、walk、hit、kick 变形测试；
-- 单角色 CPU、GPU 和内存基线；
-- 可重复导入和打包验证。
-
-## C6 前不允许扩展
-
-- 完整战斗状态机；
-- 招式表、AI、联网和正式 UI；
-- 多角色生产；
-- 破甲系统；
-- 大规模场景或内容管线。
-
-## 版本控制
-
-初始化工程后应提交：
-
-- `Assets/` 与所有 `.meta`；
-- `Packages/manifest.json` 和 `packages-lock.json`；
-- `ProjectSettings/`。
-
-不得提交 `Library/`、`Temp/`、`Logs/`、`UserSettings/` 和构建输出。大型原创模型与纹理由 Git LFS 管理。
-
-正式基线：Unity `6000.4.1f1` Apple Silicon + URP。若无法复现，先在 `Docs/DECISIONS.md` 新增替代决策。
+如果未来重启 Unity 验证，应根据当时版本重新初始化独立工程，不应把本墓碑目录视为可打开的 Unity 项目。

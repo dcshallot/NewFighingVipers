@@ -15,13 +15,13 @@ Add-Type -AssemblyName System.Drawing
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 if ([string]::IsNullOrWhiteSpace($TexCacheDir)) {
-    $TexCacheDir = Join-Path $repoRoot 'Resources\M2emulator\TEXCACHE'
+    $TexCacheDir = Join-Path $repoRoot 'LocalData\ThirdParty\Model2Emulator\TEXCACHE'
 }
 if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
-    $ManifestPath = Join-Path $repoRoot 'Reference\OriginalAssets\Textures\FightingVipers\Honey\Honey_Master_TextureSet\_manifest.csv'
+    $ManifestPath = Join-Path $repoRoot 'LocalData\Raw\Model2\Honey\Honey_Master_TextureSet\_manifest.csv'
 }
 if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
-    $OutputRoot = Join-Path $repoRoot 'Reference\OriginalAssets\Textures\FightingVipers\Honey\Honey_Master_TextureSet\_IncomingDumpAuto'
+    $OutputRoot = Join-Path $repoRoot 'LocalData\Raw\Model2\Honey\Honey_Master_TextureSet\_IncomingDumpAuto'
 }
 
 function Resolve-WorkspacePath {
@@ -33,8 +33,11 @@ function Resolve-WorkspacePath {
     )
 
     $fullPath = [System.IO.Path]::GetFullPath($Path)
-    $fullRoot = [System.IO.Path]::GetFullPath($repoRoot)
-    if (-not $fullPath.StartsWith($fullRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+    $fullRoot = [System.IO.Path]::GetFullPath($repoRoot).TrimEnd([char[]]@('\', '/'))
+    $rootPrefix = $fullRoot + [System.IO.Path]::DirectorySeparatorChar
+    $isRoot = $fullPath.Equals($fullRoot, [System.StringComparison]::OrdinalIgnoreCase)
+    $isDescendant = $fullPath.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)
+    if (-not $isRoot -and -not $isDescendant) {
         throw "Refusing to operate outside workspace: $fullPath"
     }
 
@@ -392,6 +395,13 @@ function Invoke-ArchiveCurrentTexCacheBatch {
 $TexCacheDir = Resolve-WorkspacePath -Path $TexCacheDir -MustExist
 $ManifestPath = Resolve-WorkspacePath -Path $ManifestPath -MustExist
 $OutputRoot = Resolve-WorkspacePath -Path $OutputRoot
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot 'LocalData')).TrimEnd([char[]]@('\', '/'))
+$localDataPrefix = $localDataRoot + [System.IO.Path]::DirectorySeparatorChar
+foreach ($pathToProtect in @($TexCacheDir, $OutputRoot)) {
+    if (-not $pathToProtect.StartsWith($localDataPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "TexCacheDir and OutputRoot must stay under LocalData: $pathToProtect"
+    }
+}
 New-Item -ItemType Directory -Force -Path $OutputRoot | Out-Null
 
 Write-Host "Watching TEXCACHE: $TexCacheDir"

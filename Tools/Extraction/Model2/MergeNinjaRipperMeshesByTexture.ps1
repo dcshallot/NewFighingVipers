@@ -17,6 +17,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $InvariantCulture = [System.Globalization.CultureInfo]::InvariantCulture
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\.."))
 
 function Resolve-RepoPath {
     param([string]$PathValue)
@@ -25,7 +26,7 @@ function Resolve-RepoPath {
         return (Resolve-Path -LiteralPath $PathValue).Path
     }
 
-    return (Resolve-Path -LiteralPath (Join-Path (Get-Location).Path $PathValue)).Path
+    return (Resolve-Path -LiteralPath (Join-Path $repoRoot $PathValue)).Path
 }
 
 function Read-CString {
@@ -181,13 +182,15 @@ $ripFrameDirPath = Resolve-RepoPath -PathValue $RipFrameDir
 if ([string]::IsNullOrWhiteSpace($OutputObjPath)) {
     $textureBaseName = [System.IO.Path]::GetFileNameWithoutExtension($TextureName)
     $suffix = if ($PerspectiveDivideByW) { "_pwdiv" } else { "_raw" }
-    $OutputObjPath = Join-Path $ripFrameDirPath ("_merged_{0}{1}.obj" -f $textureBaseName, $suffix)
+    $OutputObjPath = Join-Path $repoRoot ("LocalData\Generated\Model2\MergedMeshes\_merged_{0}{1}.obj" -f $textureBaseName, $suffix)
 }
 elseif (-not [System.IO.Path]::IsPathRooted($OutputObjPath)) {
-    $OutputObjPath = Join-Path (Get-Location).Path $OutputObjPath
+    $OutputObjPath = Join-Path $repoRoot $OutputObjPath
 }
 
 $outputObjFullPath = [System.IO.Path]::GetFullPath($OutputObjPath)
+$localDataRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "LocalData")).TrimEnd([char[]]@('\', '/'))
+if (-not $outputObjFullPath.StartsWith($localDataRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) { throw "OutputObjPath must stay under LocalData" }
 $outputDir = [System.IO.Path]::GetDirectoryName($outputObjFullPath)
 if (-not (Test-Path -LiteralPath $outputDir)) {
     [void](New-Item -ItemType Directory -Path $outputDir)

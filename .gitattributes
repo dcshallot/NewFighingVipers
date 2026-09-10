@@ -19,6 +19,9 @@ ArtSource/**/*.tiff filter=lfs diff=lfs merge=lfs -text
 ArtSource/**/*.exr filter=lfs diff=lfs merge=lfs -text
 ArtSource/**/*.tga filter=lfs diff=lfs merge=lfs -text
 ArtSource/**/*.png filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.webp filter=lfs diff=lfs merge=lfs -text
 
 # Game-ready binary character assets
 Game/Assets/**/*.fbx filter=lfs diff=lfs merge=lfs -text lockable
@@ -29,6 +32,9 @@ Game/Assets/**/*.tiff filter=lfs diff=lfs merge=lfs -text
 Game/Assets/**/*.exr filter=lfs diff=lfs merge=lfs -text
 Game/Assets/**/*.tga filter=lfs diff=lfs merge=lfs -text
 Game/Assets/**/*.png filter=lfs diff=lfs merge=lfs -text
+Game/Assets/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+Game/Assets/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+Game/Assets/**/*.webp filter=lfs diff=lfs merge=lfs -text
 
 # Unity YAML assets remain mergeable text
 *.meta text eol=lf
