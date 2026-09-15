@@ -9,12 +9,12 @@
 | D-003 | Superseded | 被四 profile 支持矩阵替代 |
 | D-004 | Archived | Unity 测试工程已删除 |
 | D-005 | Archived exact replay | Blender 5.2.1 仅用于实验重放 |
-| D-006 | Superseded | `Development/REPOSITORY_AND_DATA_POLICY.md` |
+| D-006 | Superseded | `Development/ENVIRONMENT.md` |
 | D-007 | Active | 历史笔记与脚本继续保留 |
 | D-008 | Recorded | Hunyuan 仍是非必需历史实验 |
 | D-009 | Recorded | Honey 视觉研究规则 |
 | D-010 | Recorded | P1-only 测试范围 |
-| D-011 | Active archive decision | `MAC_BLENDER_HONEY_AUTOMATION_TEST.md` |
+| D-011 | Active archive decision | `../Reference/ResearchNotes/2026-09-09-mac-blender-honey-automation-test.md` |
 
 新决策必须记录状态、证据、影响文件和替代关系，不静默改写版本或数据边界。
 

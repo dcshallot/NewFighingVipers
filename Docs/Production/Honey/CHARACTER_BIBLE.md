@@ -36,7 +36,7 @@
 
 贴图历史语义索引包括正脸 `9104012`、刘海 `8106013`、侧发 `9144012`、裙摆花边／褶皱 `8086012 / 80C6012 / 90C6012`、胸前衣身 `D044012`、后背／扣件 `D004012`、白色蕾丝装饰 `B04600A`。这些编号只能用于重新取得 dump 后复核，不能直接定义新 UV。
 
-本次 Mac 测试的参考选择、Gate 和最终结论见 [`../../MAC_BLENDER_HONEY_AUTOMATION_TEST.md`](../../MAC_BLENDER_HONEY_AUTOMATION_TEST.md)。
+本次 Mac 测试的参考选择、Gate 和最终结论见 [`../../../Reference/ResearchNotes/2026-09-09-mac-blender-honey-automation-test.md`](../../../Reference/ResearchNotes/2026-09-09-mac-blender-honey-automation-test.md)。
 
 ## C1 冻结内容
 

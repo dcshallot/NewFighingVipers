@@ -1,6 +1,6 @@
 # Manifest Schema v2
 
-返回 [`Reference/README.md`](../README.md)。
+本目录保存项目清单和 schema 规则；当前状态见 `Docs/PROJECT_STATUS.md`，实验事实见 `Reference/ResearchNotes/`。
 
 本目录是来源、选帧、资产和工具元数据的机器可读事实层。所有 CSV 使用 UTF-8、LF、首列 `schema_version=2`，ID 在各自命名空间内唯一。
 

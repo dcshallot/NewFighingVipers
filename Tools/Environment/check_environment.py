@@ -520,7 +520,7 @@ def main() -> int:
         check_command(report, "Git LFS", commands["git_lfs"], ["version"], versions["git_lfs_min"])
         check_unity(report, config)
 
-    for label, relative in {"README": "README.md", "manifest rules": "Reference/Manifests/README.md", "data policy": "Docs/Development/REPOSITORY_AND_DATA_POLICY.md", "LocalData policy": "LocalData/README.md"}.items():
+    for label, relative in {"README": "README.md", "manifest rules": "Reference/Manifests/README.md", "environment and data policy": "Docs/Development/ENVIRONMENT.md"}.items():
         (report.pass_ if (REPO_ROOT / relative).is_file() else report.fail)(label, "exists" if (REPO_ROOT / relative).is_file() else "missing")
 
     tables = check_manifests(report, config)

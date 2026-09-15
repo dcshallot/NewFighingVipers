@@ -35,5 +35,5 @@ Review/     C2～C6 批准快照
 详见：
 
 - `Docs/Development/ASSET_PIPELINE.md`
-- `Docs/Development/REPOSITORY_AND_DATA_POLICY.md`
+- `Docs/Development/ENVIRONMENT.md`
 - `Docs/Production/Honey/ASSET_SPEC.md`

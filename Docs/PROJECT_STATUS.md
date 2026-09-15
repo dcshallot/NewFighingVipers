@@ -30,7 +30,7 @@
 - `ArtSource/Characters/Honey/Blockout/Honey_ClothingBlockout_v005.blend`
 - `Reference/Archive/MacBlenderHoneyTest/` 两张评审板
 - `Reference/Manifests/` schema v2 清单
-- `Docs/MAC_BLENDER_HONEY_AUTOMATION_TEST.md`
+- `Reference/ResearchNotes/2026-09-09-mac-blender-honey-automation-test.md`
 - `Reference/ResearchNotes/`
 - `Tools/`
 
@@ -51,4 +51,4 @@
 - 有角色美术资源承担脸、发型、服装、拓扑和权重；
 - 改为玩法优先，以 placeholder 推进方向 B。
 
-未来重启必须新增决策、启用对应 profile，并重新定义路线图；当前 [`ROADMAP.md`](ROADMAP.md) 仅为归档墓碑。
+未来重启必须新增决策、启用对应 profile，并重新定义路线图。

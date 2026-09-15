@@ -144,7 +144,7 @@ Get-ChildItem 'C:\Windows\System32\xinput*.dll','C:\Windows\SysWOW64\xinput*.dll
 - 如果是“Fighting Vipers / Model 2 这条研究线特有的坑和判断”，补到对应研究笔记，不要混进本文件。
 - 工具的当前状态、平台、输入输出和副作用以 `Tools/tool-manifest.csv` 为准。
 - Windows-only 提取输入和输出统一放在 `LocalData/`；不要恢复旧的 `Resources/` 作为正式目录。
-- 当前仓库默认是三平台 `archive`；本文件中的可执行工具属于 Windows-only `windows-extraction`。完整职责见 `Docs/Development/REPRODUCIBILITY.md`。
+- 当前仓库默认是三平台 `archive`；本文件中的可执行工具属于 Windows-only `windows-extraction`。完整职责见 `Docs/Development/ENVIRONMENT.md`。
 
 ## 8. PNG / 图像批处理脚本
 

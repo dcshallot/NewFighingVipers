@@ -40,4 +40,4 @@ future game project
 - 小型关键评审证据进入 `Reference/Archive/`；
 - 未来游戏工程路径在新决策中定义。
 
-仓库与数据规则见 [`REPOSITORY_AND_DATA_POLICY.md`](REPOSITORY_AND_DATA_POLICY.md)。
+仓库与数据规则见 [`ENVIRONMENT.md`](ENVIRONMENT.md)。
