@@ -10,6 +10,8 @@ Fighting Vipers / Honey 的研究、工具与技术验证归档。当前没有�
 - 历史 ResearchNotes 和 Model 2/Hunyuan/Windows 工具保留。
 - Unity 测试工程、受限原始素材和中间物不在仓库中。
 
+想了解项目过去折腾过哪些路线和实验，请直接查看 `Reference/ResearchNotes/` 下的日期化研究记录。
+
 本次 No-Go 只针对 Mac M4 + Blender 5.2.1 + MPFB 2.0.17 + 通用 LLM/脚本的低人工介入测试，不否定其他 AI 3D、平台或未来重启。
 
 ## 环境审计
